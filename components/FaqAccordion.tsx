@@ -8,10 +8,15 @@ import { cn } from "@/lib/format";
 
 export function FaqAccordion() {
   const { activeNiche } = useShowcase();
-  const { mode, theme, faqs, brand } = activeNiche;
+  const { mode, theme, faqs, brand, footer, cms } = activeNiche;
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  const clientWaPhone =
+    cms?.whatsappOrderNumber?.replace(/[^0-9]/g, "") ||
+    footer.phone.replace(/[^0-9]/g, "") ||
+    WHATSAPP_NUMBER;
+
+  const whatsappHref = `https://wa.me/${clientWaPhone}?text=${encodeURIComponent(
     `Halo ${brand}, saya ingin bertanya lebih lanjut mengenai layanan Anda.`,
   )}`;
 

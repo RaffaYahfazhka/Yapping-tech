@@ -43,6 +43,53 @@ body {
 }
 
 @layer utilities {
+  @keyframes crystalSlow {
+    0%, 100% {
+      transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    }
+    33% {
+      transform: translate3d(60px, -40px, 0) scale(1.18) rotate(8deg);
+    }
+    66% {
+      transform: translate3d(-50px, 45px, 0) scale(0.92) rotate(-6deg);
+    }
+  }
+
+  @keyframes crystalReverse {
+    0%, 100% {
+      transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    }
+    33% {
+      transform: translate3d(-70px, 40px, 0) scale(1.15) rotate(-10deg);
+    }
+    66% {
+      transform: translate3d(50px, -55px, 0) scale(0.9) rotate(8deg);
+    }
+  }
+
+  @keyframes crystalPulse {
+    0%, 100% {
+      opacity: 0.7;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.95;
+      transform: scale(1.22);
+    }
+  }
+
+  .anim-crystal-1 {
+    animation: crystalSlow 14s ease-in-out infinite alternate;
+  }
+
+  .anim-crystal-2 {
+    animation: crystalReverse 18s ease-in-out infinite alternate;
+  }
+
+  .anim-crystal-3 {
+    animation: crystalPulse 9s ease-in-out infinite alternate;
+  }
+
   .bg-canvas {
     background-color: var(--bg);
   }

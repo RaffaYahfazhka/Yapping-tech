@@ -219,6 +219,7 @@ export function ProductCard({
             src={product.image}
             alt={product.imageAlt}
             fill
+            unoptimized={product.image.startsWith("data:") || product.image.startsWith("http")}
             sizes="(max-width: 640px) 85vw, (max-width: 1024px) 48vw, 33vw"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
@@ -335,6 +336,7 @@ export function ProductCard({
             src={product.image}
             alt={product.imageAlt}
             fill
+            unoptimized={product.image.startsWith("data:") || product.image.startsWith("http")}
             sizes="(max-width: 640px) 82vw, (max-width: 1024px) 46vw, 30vw"
             className={cn(
               "object-cover transition-all duration-[1100ms] ease-silk",
@@ -500,6 +502,7 @@ export function ProductCard({
           src={product.image}
           alt={product.imageAlt}
           fill
+          unoptimized={product.image.startsWith("data:") || product.image.startsWith("http")}
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 48vw, 33vw"
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />

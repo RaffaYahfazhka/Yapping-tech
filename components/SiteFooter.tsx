@@ -7,12 +7,17 @@ import { cn } from "@/lib/format";
 
 export function SiteFooter() {
   const { activeNiche, openCart } = useShowcase();
-  const { mode, theme, cta, footer, brand, brandSuffix, dock } = activeNiche;
+  const { mode, theme, cta, footer, brand, brandSuffix, dock, cms } = activeNiche;
+
+  const clientWaPhone =
+    cms?.whatsappOrderNumber?.replace(/[^0-9]/g, "") ||
+    footer.phone.replace(/[^0-9]/g, "") ||
+    WHATSAPP_NUMBER;
 
   const developerHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     `Halo, saya melihat landing page demo ${brand} (${dock.label}) dan ingin membuat website serupa untuk bisnis saya.`,
   )}`;
-  const brandHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  const brandHref = `https://wa.me/${clientWaPhone}?text=${encodeURIComponent(
     `Halo ${brand}, saya ingin berdiskusi mengenai kebutuhan saya.`,
   )}`;
 
@@ -106,7 +111,7 @@ export function SiteFooter() {
       <div className="border-t border-line px-5 py-12 sm:px-8">
         <div className="mx-auto grid max-w-[1440px] gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            {activeNiche.logo ? (
+            {activeNiche.logo && !cms?.useTextLogo ? (
               <div>
                 <Image
                   src={activeNiche.logo}
@@ -120,6 +125,8 @@ export function SiteFooter() {
               <div
                 className={cn(
                   "text-ink",
+                  mode === "retail" &&
+                    "font-heading text-[26px] font-semibold tracking-tight",
                   mode === "bouquet" &&
                     "font-heading text-[32px] font-light tracking-[0.1em]",
                   mode === "catering" &&

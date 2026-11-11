@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 110" fill="none">
+  <!-- Caduceus medical staff on left -->
+  <g transform="translate(14, 8)">
+    <!-- Wings -->
+    <path d="M28 20 C20 6, 4 10, 0 18 C12 18, 20 25, 26 30 Z" fill="#000" />
+    <path d="M28 20 C36 6, 52 10, 56 18 C44 18, 36 25, 30 30 Z" fill="#000" />
+    <!-- Center staff and bulb -->
+    <circle cx="28" cy="10" r="5" fill="#000" />
+    <path d="M28 12 L28 84" stroke="#000" stroke-width="3" stroke-linecap="round" />
+    <!-- Twin snakes intertwining -->
+    <path d="M16 28 C28 24, 38 34, 28 42 C18 50, 20 60, 28 66 C36 72, 34 80, 28 84" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round" />
+    <path d="M40 28 C28 24, 18 34, 28 42 C38 50, 36 60, 28 66 C20 72, 22 80, 28 84" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round" />
+  </g>
+
+  <!-- Yellow Rounded Pill Badge with Gradient -->
+  <defs>
+    <linearGradient id="goldBadge" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFBD39" />
+      <stop offset="50%" stop-color="#F5A623" />
+      <stop offset="100%" stop-color="#E29210" />
+    </linearGradient>
+  </defs>
+
+  <rect x="52" y="22" width="280" height="66" rx="16" fill="url(#goldBadge)" />
+
+  <!-- ClickCare serif text -->
+  <text x="76" y="65" font-family="'Times New Roman', Times, serif" font-weight="bold" font-size="34" letter-spacing="-0.02em" fill="#000000">
+    ClickCare
+  </text>
+
+  <!-- Target & Cursor Arrow on right -->
+  <g transform="translate(262, 55)">
+    <!-- Concentric Target Circles -->
+    <circle cx="16" cy="12" r="16" stroke="#000" stroke-width="3.5" fill="none" />
+    <circle cx="16" cy="12" r="9" stroke="#000" stroke-width="3" fill="none" />
+    <circle cx="16" cy="12" r="3.5" fill="#000" />
+    <!-- Pointer Click Cursor -->
+    <path d="M16 12 L34 32 L26 33 L32 44 L27 46 L21 35 L14 41 Z" fill="#000" stroke="#FFF" stroke-width="1.5" />
+  </g>
+</svg>
+

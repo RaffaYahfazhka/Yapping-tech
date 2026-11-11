@@ -12,6 +12,9 @@ interface PageProps {
   params: Promise<{
     slug: string;
   }>;
+  searchParams?: Promise<{
+    embed?: string;
+  }>;
 }
 
 export async function generateStaticParams() {
@@ -41,8 +44,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function TemplatePage({ params }: PageProps) {
+export default async function TemplatePage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const isEmbedded = resolvedSearchParams?.embed === "1";
   const niche = NICHE_MAP[slug as NicheId];
 
   if (!niche) {
@@ -50,7 +55,11 @@ export default async function TemplatePage({ params }: PageProps) {
   }
 
   return (
-    <ShowcaseProvider initialNiche={slug as NicheId} basePath="/templates">
+    <ShowcaseProvider
+      initialNiche={slug as NicheId}
+      basePath="/templates"
+      initialEmbedded={isEmbedded}
+    >
       <DemoControlDock />
       <TemplateStage />
       <CartDrawer />

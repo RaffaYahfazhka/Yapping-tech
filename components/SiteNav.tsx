@@ -69,7 +69,7 @@ export function SiteNav() {
     );
 
   return (
-    <header className="relative z-20 border-b border-line">
+    <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur-md">
       <div
         className={cn(
           "mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-5 sm:px-8",
