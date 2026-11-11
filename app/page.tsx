@@ -11,7 +11,7 @@ import { FaqSection } from "@/components/FaqSection";
 import { ModernFooter } from "@/components/ModernFooter";
 
 export const metadata: Metadata = {
-  title: "Yapping Techflow — Venture Builder, Superapp Architecture & High-Conversion Digital Studio",
+  title: "Yapping Techflow",
   description:
     "Kami tidak sekadar membuat kode. Kami merekayasa aset digital berdaya konversi brutal, membangun ekosistem venture mandiri, dan melipatgandakan valuasi bisnis klien melalui teknologi mutakhir.",
 };
