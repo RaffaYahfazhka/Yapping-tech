@@ -1,0 +1,1 @@
+{"version":4,"routes":{"/templates/patisserie":{},"/templates/florist":{},"/templates/catering":{}},"dynamicRoutes":{"/templates/[slug]":{"dataRoute":null,"dataRouteRegex":null,"fallback":null,"fallbackRevalidate":false,"fallbackSourceRoute":"/templates/[slug]","routeRegex":"^\\/templates\\/([^/]+?)(?:\\/)?$","allowHeader":[]}},"notFoundRoutes":[]}
