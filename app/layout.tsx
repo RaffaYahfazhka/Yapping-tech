@@ -55,11 +55,17 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Yapping Techflow — Tech Ecosystem & Superapp Suite",
+  title: "Yapping Techflow",
   description:
     "Building bold digital brands with thoughtful design and robust technology. Yapping Techflow menaungi beragam inovasi digital, tools bisnis, dan landing page performa tinggi.",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+  },
   openGraph: {
-    title: "Yapping Techflow — Tech Ecosystem & Superapp Suite",
+    title: "Yapping Techflow",
     description:
       "Building bold digital brands with thoughtful design and robust technology.",
     type: "website",
