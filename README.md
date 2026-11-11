@@ -1,91 +1,155 @@
-# 🌟 Atelier Showcase — Client Landing Page Template & Prototype
+# 🌟 Yapping Techflow — Multi-Tenant Ecosystem & Digital Studio Platform
 
-Repository ini merupakan **interactive landing page & showcase prototype** yang dirancang sebagai sampel layout presentasi/pitching untuk calon klien. Proyek ini memamerkan desain modern, interaktif, responsif, serta kemampuan kustomisasi tema/layout untuk berbagai jenis bisnis (*niche*).
+Repository ini merupakan platform komprehensif yang memadukan **Company Profile Yapping Techflow** dengan **Multi-Tenant Niche Engine (Atelier Suite)**. Dibangun menggunakan arsitektur modern Next.js yang memungkinkan **satu codebase / satu repository melayani banyak domain klien mandiri secara bersih (clean URL tanpa base-path)**.
 
 ---
 
-## 🎯 Tujuan Proyek
+## 🌐 Cara Kerja Arsitektur Multi-Domain (Multi-Tenancy)
 
-1. **Portfolio & Client Demo**: Digunakan sebagai demonstrasi langsung (live interactive prototype) ke calon klien mengenai standar desain, animasi, alur checkout/katalog, dan responsivitas web modern.
-2. **Multi-Niche Layout Switcher**: Dilengkapi dengan fitur demo switchable layout (misal: *Patisserie*, *Florist*, *Catering*, dll.) melalui `DemoControlDock` untuk memperlihatkan fleksibilitas template dalam menyesuaikan branding klien.
-3. **Interactive E-Commerce / Showcase Feel**: Memiliki elemen interaktif seperti slider katalog, FAQ accordion, cart drawer preview, visual storytelling, dan micro-interactions yang halus.
+Salah satu keunggulan utama dari repository ini adalah kemampuannya menampung banyak website dan domain klien berbeda dalam **1 Repository & 1 Deployment**, tanpa membuat aplikasi berat dan tanpa URL berantakan (`/templates/...`).
+
+### 1. Diagram Alur Kerja (Workflow)
+
+```
+                            [ Permintaan Pengunjung ]
+                                        │
+                                        ▼
+                         ┌─────────────────────────────┐
+                         │   Next.js Edge Middleware   │  (middleware.ts)
+                         │   Membaca `req.headers.host`│
+                         └──────────────┬──────────────┘
+                                        │
+           ┌────────────────────────────┴────────────────────────────┐
+           ▼                                                         ▼
+[ Domain Utama: yappingtechflow.com ]              [ Custom Domain Klien: rotienak.com ]
+           │                                                         │
+           ▼                                                         ▼
+Tampilkan Company Profile & Studio                 Diam-diam REWRITE di level server:
+- Hero S3 Marketing Copy                           `NextResponse.rewrite('/templates/patisserie')`
+- Products & Services Slider                                         │
+- Katalog Template Demo (/templates)                                 ▼
+- Filosofi & Closing CTA                           URL Browser Klien TETAP BERSIH:
+                                                   👉 https://rotienak.com/
+                                                   👉 Floating Dock Agensi Otomatis HILANG!
+```
+
+---
+
+### 2. Kenapa Tidak Berat Walaupun 1 Repo?
+
+Banyak yang mengira menampung puluhan website dalam 1 repo akan membuat aplikasi lambat. Faktanya, arsitektur ini **sangat ringan dan cepat** karena:
+
+1. **Automatic Code Splitting (Next.js App Router)**:
+   - Pengunjung yang membuka `rotienak.com` **hanya mendownload** aset dan kode untuk template Patisserie.
+   - Kode Company Profile, template Florist, Catering, dll **TIDAK PERNAH dikirimkan** ke browser pengunjung tersebut.
+2. **Server-Side URL Rewrite (Edge)**:
+   - Proses pencocokan domain terjadi di level Edge Middleware dalam waktu kurang dari **10 milidetik (sub-10ms)** sebelum halaman di-render.
+3. **Database/Config-Driven Multi-Tenancy**:
+   - Satu komponen template dapat digunakan oleh ratusan klien berbeda, hanya datanya (nama toko, harga produk, gambar, nomor WhatsApp) yang disesuaikan.
+4. **Maintenance Super Cepat**:
+   - Jika ada perbaikan bug atau update fitur di keranjang belanja, Anda hanya perlu mengedit kode di **1 tempat saja**. Seketika itu juga, **seluruh website klien otomatis ter-update** tanpa perlu deploy puluhan repo terpisah.
+
+---
+
+### 3. Panduan Menambahkan Domain Klien Baru
+
+Ketika ada klien baru yang membeli template dan menggunakan domain pribadi mereka sendiri:
+
+#### Langkah 1: Arahkan DNS Domain Klien
+Minta klien (atau Anda sendiri) untuk mengarahkan DNS domain mereka ke Vercel/server hosting proyek:
+- **Tipe A Record**: `@` diarahkan ke IP Server / Vercel (`76.76.21.21`).
+- **Tipe CNAME**: `www` diarahkan ke `cname.vercel-dns.com` (atau domain hosting Anda).
+- Di dashboard Vercel: Tambahkan domain tersebut ke dalam daftar domain proyek.
+
+#### Langkah 2: Daftarkan Domain di `middleware.ts`
+Buka file `middleware.ts`, lalu tambahkan baris domain klien ke objek `CLIENT_DOMAINS`:
+
+```ts
+// middleware.ts
+export const CLIENT_DOMAINS: Record<string, string> = {
+  // Contoh Domain Klien Nyata:
+  "rotienak.com": "patisserie",
+  "www.rotienak.com": "patisserie",
+  "bloomboutique.id": "florist",
+  "sedapcatering.com": "catering",
+
+  // Local testing preview:
+  "patisserie.localhost:3000": "patisserie",
+  "florist.localhost:3000": "florist",
+  "catering.localhost:3000": "catering",
+};
+```
+
+Selesai! Saat `rotienak.com` diakses, pengunjung langsung melihat website toko kue tersebut secara penuh dan bersih di `https://rotienak.com/`.
+
+---
+
+### 4. White-Label Otomatis
+Komponen `DemoControlDock.tsx` secara otomatis mendeteksi nama domain yang sedang aktif:
+- **Di domain agensi (`yappingtechflow.com` / `localhost:3000`)**: Floating dock aktif untuk kebutuhan demo & pitching ke calon klien.
+- **Di custom domain klien (`rotienak.com`)**: Floating dock **otomatis dinonaktifkan (hidden)** sehingga website klien tampil 100% profesional dan independen tanpa branding agensi yang mengganggu.
 
 ---
 
 ## 🛠️ Tech Stack & Dependencies
 
-Proyek ini dibangun menggunakan arsitektur web modern yang cepat, scalable, dan type-safe:
-
-### **Core Framework & Runtime**
-- **[Next.js](https://nextjs.org/) (v16 App Router)**: Framework React full-stack performa tinggi dengan fitur modern (Server/Client Components, routing dinamis, dan optimasi aset).
-- **[React](https://react.dev/) 19 & React DOM 19**: Library UI terkini untuk reaktivitas dan komponen berbasis deklaratif.
-- **[TypeScript](https://www.typescriptlang.org/)**: Memberikan static type-checking yang ketat untuk skalabilitas kode dan minim bug.
-
-### **Styling & UI Design**
-- **[Tailwind CSS](https://tailwindcss.com/) (v3)**: Utility-first CSS framework untuk styling cepat, desain konsisten, dan fleksibilitas responsif di semua ukuran layar (Mobile, Tablet, Desktop).
-- **[PostCSS](https://postcss.org/) & Autoprefixer**: Tooling CSS modern untuk kompatibilitas browser lintas platform.
-
-### **Motion & Interactions**
-- **[Framer Motion](https://www.framer.com/motion/)**: Library animasi standar industri untuk micro-interactions, layout transitions, drawer slide-ins, dan page transitions yang halus.
-- **[Embla Carousel React](https://www.embla-carousel.com/)**: Carousel library yang sangat ringan, fluid, dan touch-friendly untuk slider produk/showcase interaktif.
+- **Framework**: [Next.js](https://nextjs.org/) (App Router, Server Components & Dynamic Routing)
+- **UI Library**: [React](https://react.dev/) 19 & React DOM 19
+- **Bahasa**: [TypeScript](https://www.typescriptlang.org/) (Full Type-Safety)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) v3 (Responsive, Fluid Theme Tokens)
+- **Motion & UI**: [Framer Motion](https://www.framer.com/motion/) & [Embla Carousel](https://www.embla-carousel.com/)
 
 ---
 
 ## 📂 Struktur Direktori Utama
 
 ```text
-landing-page/
-├── app/                  # Next.js App Router (Layouts & Pages)
-├── components/           # Komponen UI utama
-│   ├── experiences/      # Template layout spesifik niche (Catering, Florist, Patisserie)
-│   ├── ui/               # Reusable UI primitives
-│   ├── CartDrawer.tsx    # Komponen keranjang belanja / preview checkout
-│   ├── DemoControlDock.tsx# Kontrol floating dock untuk switch template/tema demo
-│   ├── HeroSection.tsx   # Hero banner utama
-│   ├── InteractiveShowcaseSlider.tsx # Carousel slider produk/portofolio
-│   └── ...
-├── config/               # Konfigurasi data & konten demo
-├── context/              # State management React Context (ShowcaseContext)
-├── lib/                  # Helper utilities & class merging (cn)
-├── public/               # Asset statis (gambar, icon, font)
-└── types/                # Definisi TypeScript interface & types
+yapping-tech/
+├── middleware.ts          # Edge Middleware: Otak Multi-Tenant URL Rewrite
+├── app/
+│   ├── page.tsx           # Company Profile Yapping Techflow (Domain Utama)
+│   ├── templates/
+│   │   ├── page.tsx       # Katalog Direktori Template Bisnis
+│   │   └── [slug]/
+│   │       └── page.tsx   # Dynamic Multi-Niche Engine (/patisserie, /florist, /catering)
+├── components/
+│   ├── ComproNavbar.tsx   # Floating Pill Navbar Company Profile
+│   ├── UnifiedProductsServices.tsx # Editorial Carousel Portofolio & Deployments
+│   ├── DemoControlDock.tsx# Switcher Dock (Otomatis White-Label di domain klien)
+│   ├── experiences/       # Modul pengalaman per niche (Patisserie, Florist, Catering)
+│   └── CartDrawer.tsx     # Alur keranjang & checkout langsung ke WhatsApp
+├── config/
+│   └── niches.ts          # Database konfigurasi template, produk, & nomor WhatsApp
+└── types/                 # Definisi tipe data TypeScript
 ```
 
 ---
 
-## 🚀 Memulai Proyek (Local Development)
+## 🚀 Menjalankan Proyek Secara Lokal
 
-### 1. Prasyarat
-Pastikan Anda telah menginstal **Node.js** (v18.x atau yang lebih baru) dan package manager (**npm**, **yarn**, atau **pnpm**).
-
-### 2. Instalasi Dependensi
+### 1. Instalasi
 ```bash
-yarn install
-# atau
 npm install
-```
-
-### 3. Menjalankan Server Pengembangan
-```bash
-yarn dev
 # atau
-npm run dev
+yarn install
 ```
 
-Buka [http://localhost:3000](http://localhost:3000) di browser untuk melihat preview landing page.
-
-### 4. Build untuk Production
+### 2. Jalankan Server Dev
 ```bash
-yarn build
-yarn start
+npm run dev
+# atau
+yarn dev
 ```
+
+### 3. Menguji Multi-Domain di Localhost
+Buka browser dan coba URL berikut:
+- **Company Profile Utama**: [http://localhost:3000](http://localhost:3000)
+- **Katalog Template**: [http://localhost:3000/templates](http://localhost:3000/templates)
+- **Subdomain Patisserie Klien**: [http://patisserie.localhost:3000](http://patisserie.localhost:3000)
+- **Subdomain Florist Klien**: [http://florist.localhost:3000](http://florist.localhost:3000)
+- **Subdomain Catering Klien**: [http://catering.localhost:3000](http://catering.localhost:3000)
 
 ---
 
-## 💡 Nilai Jual untuk Klien
-
-- **Tailored Branding**: Layout dan palet warna dapat dengan mudah disesuaikan mengikuti brand guideline klien.
-- **Mobile First & Responsive**: Tampilan optimal di perangkat smartphone, tablet, maupun desktop.
-- **High Performance & SEO Ready**: Dioptimasi menggunakan Next.js App Router untuk performa loading cepat dan struktur SEO yang rapi.
-- **Conversion-Focused**: Dilengkapi CTA (Call to Action) yang jelas, navigasi intuitif, dan simulasi alur pemesanan interaktif.
-
+## 📄 Lisensi
+Hak Cipta © 2026 **Yapping Techflow**. Seluruh hak cipta dilindungi undang-undang.

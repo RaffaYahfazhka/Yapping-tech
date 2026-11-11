@@ -144,6 +144,7 @@ function CartLine({
           src={item.image}
           alt={item.name}
           fill
+          unoptimized={item.image.startsWith("data:") || item.image.startsWith("http")}
           sizes="64px"
           className="object-cover"
         />
@@ -309,7 +310,10 @@ function CheckoutForm({
     }
 
     const message = buildOrderMessage(niche, items, subtotal, form);
-    const targetPhone = niche.footer.phone.replace(/[^0-9]/g, "") || WHATSAPP_NUMBER;
+    const targetPhone =
+      niche.cms?.whatsappOrderNumber?.replace(/[^0-9]/g, "") ||
+      niche.footer.phone.replace(/[^0-9]/g, "") ||
+      WHATSAPP_NUMBER;
     const url = `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
     setWaUrl(url);
     setSent(true);

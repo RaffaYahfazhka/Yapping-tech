@@ -5,7 +5,7 @@ import type {
   Product,
 } from "@/types/landing";
 
-export const WHATSAPP_NUMBER = "6281234567890";
+export const WHATSAPP_NUMBER = "6281110010324";
 
 export const DISTRICTS: DistrictOption[] = [
   { value: "jakarta-selatan", label: "Jakarta Selatan" },

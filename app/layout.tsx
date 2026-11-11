@@ -55,13 +55,13 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Atelier Showcase — Luxury Landing Page Templates",
+  title: "Yapping Techflow — Tech Ecosystem & Superapp Suite",
   description:
-    "Tiga landing page premium untuk bisnis lokal: artisanal F&B, luxury florist, dan bespoke catering. Jelajahi design language yang berbeda dalam satu showcase.",
+    "Building bold digital brands with thoughtful design and robust technology. Yapping Techflow menaungi beragam inovasi digital, tools bisnis, dan landing page performa tinggi.",
   openGraph: {
-    title: "Atelier Showcase — Luxury Landing Page Templates",
+    title: "Yapping Techflow — Tech Ecosystem & Superapp Suite",
     description:
-      "Tiga design language, satu showcase. Artisanal F&B, luxury florist, dan bespoke catering.",
+      "Building bold digital brands with thoughtful design and robust technology.",
     type: "website",
     locale: "id_ID",
   },

@@ -118,83 +118,136 @@ const FLORIST_REVIEWS = [
 
 export function FloristExperience() {
   const { activeNiche, openCart, cartLineCount } = useShowcase();
+  const { brand, brandSuffix, hero, story, announcement, footer, cms } = activeNiche;
+  const visibility = cms?.visibility ?? {
+    showAnnouncement: true,
+    showCustomizer: true,
+    showStory: true,
+    showReviews: true,
+    showFaq: true,
+  };
+  const reviews = cms?.reviews ?? FLORIST_REVIEWS;
+  const clientWa =
+    cms?.whatsappOrderNumber?.replace(/[^0-9]/g, "") ||
+    footer.phone.replace(/[^0-9]/g, "") ||
+    RUMAH_PHONE;
+  const displayWa = footer.phone || "0859-6651-4774";
+
   const [selectedBudget, setSelectedBudget] = useState(150000);
   const [selectedType, setSelectedType] = useState("Buket Uang (Money Bouquet)");
   const [selectedDelivery, setSelectedDelivery] = useState("Kirim Kurir Instan Jabodetabek");
   const [greetingText, setGreetingText] = useState("Happy Graduation! Semoga ilmunya berkah & sukses selalu ♡");
   const [activeFloristFilter, setActiveFloristFilter] = useState("all");
 
-  const consultHref = `https://wa.me/${RUMAH_PHONE}?text=${encodeURIComponent(
-    `Halo Rumah Bouquet, saya ingin konsultasi / pesan buket:\n• Jenis Buket: ${selectedType}\n• Perkiraan Budget: ${formatIDR(selectedBudget)}\n• Opsi Penyerahan: ${selectedDelivery}\n• Pesan Kartu: "${greetingText}"\n\nApakah slot pesanan (urgent/pre-order) masih tersedia? Terima kasih!`
+  const consultHref = `https://wa.me/${clientWa}?text=${encodeURIComponent(
+    `Halo ${brand}, saya ingin konsultasi / pesan buket:\n• Jenis Buket: ${selectedType}\n• Perkiraan Budget: ${formatIDR(selectedBudget)}\n• Opsi Penyerahan: ${selectedDelivery}\n• Pesan Kartu: "${greetingText}"\n\nApakah slot pesanan (urgent/pre-order) masih tersedia? Terima kasih!`
   )}`;
 
+  const mainHeroImg = hero.images[0] ?? {
+    src: "/images/florist/hero.jpg",
+    alt: `Signature Florist Collection ${brand}`,
+    caption: "Buket Wisuda & Hadiah",
+  };
+  const leftHeroImg = hero.images[1] ?? {
+    src: "/images/florist/money-bouquet-real.jpg",
+    alt: "Money Bouquet Kipas",
+    caption: "Money Bouquet",
+  };
+  const rightTopImg = hero.images[2] ?? {
+    src: "/images/florist/graduation-bouquet.jpg",
+    alt: "Buket Wisuda Boneka Toga",
+    caption: "Buket Boneka & Selempang",
+  };
+
   return (
-    <div className="min-h-screen text-[#241A1E]" style={{ backgroundColor: "#FDFBF9" }}>
+    <div className="min-h-screen bg-canvas text-ink">
       {/* 1. BRAND HEADER & MASTHEAD WITH DIRECT WHATSAPP HOTLINE */}
-      <header className="border-b border-[#EFE6E8] bg-[#FDFBF9]/95 backdrop-blur-md sticky top-[52px] z-30">
-        <div className="mx-auto max-w-[1400px] px-6 py-2.5 border-b border-[#EFE6E8]/60 flex items-center justify-between text-[9px] font-ui uppercase tracking-[0.24em] text-[#75636A]">
-          <span className="flex items-center gap-2 font-medium text-[#241A1E]">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#A85A68] opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#A85A68]" />
+      <header className="border-b border-line bg-canvas/95 backdrop-blur-md sticky top-0 z-30">
+        {visibility.showAnnouncement && (
+          <div className="mx-auto max-w-[1400px] px-6 py-2.5 border-b border-line/60 flex items-center justify-between text-[9px] font-ui uppercase tracking-[0.24em] text-muted">
+            <span className="flex items-center gap-2 font-medium text-ink">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+              </span>
+              {announcement.status}: {announcement.messages[0]}
             </span>
-            {activeNiche.announcement.status}: {activeNiche.announcement.messages[0]}
-          </span>
-          <span className="hidden sm:inline">Pondok Kelapa, Duren Sawit · Jakarta Timur</span>
-          <span className="hidden md:inline font-semibold text-[#A85A68]">Standby 24 Jam · COD &amp; Instant Jabodetabek</span>
-        </div>
+            <span className="hidden sm:inline">{announcement.messages[1] || footer.address}</span>
+            <span className="hidden md:inline font-semibold text-accent">Standby 24 Jam · COD &amp; Instant Jabodetabek</span>
+          </div>
+        )}
 
         <div className="mx-auto max-w-[1400px] px-6 py-3.5 sm:px-10 flex items-center justify-between">
           <a href="#top" className="flex items-center gap-3 group">
-            <Image
-              src="/images/florist/logo.png"
-              alt="Rumah Bouquet Florist & Gift"
-              width={150}
-              height={65}
-              priority
-              className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
-            />
+            {activeNiche.logo && !cms?.useTextLogo ? (
+              <Image
+                src={activeNiche.logo}
+                alt={brand}
+                width={150}
+                height={65}
+                priority
+                unoptimized={activeNiche.logo.startsWith("data:") || activeNiche.logo.startsWith("http")}
+                className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+            ) : (
+              <div>
+                <div className="font-heading text-[24px] sm:text-[28px] font-light leading-none tracking-[0.08em] text-ink">
+                  {brand}
+                </div>
+                <div className="mt-1 text-[8px] uppercase tracking-[0.26em] text-muted">
+                  {brandSuffix}
+                </div>
+              </div>
+            )}
           </a>
 
-          <nav className="hidden lg:flex items-center gap-8 font-ui text-[10.5px] uppercase tracking-[0.16em] text-[#241A1E]/85 font-medium">
-            <a href="#collection" className="hover:text-[#A85A68] transition-colors">
+          <nav className="hidden lg:flex items-center gap-8 font-ui text-[10.5px] uppercase tracking-[0.16em] text-ink/85 font-medium">
+            <a href="#collection" className="hover:text-[var(--accent)] transition-colors">
               Koleksi Buket
             </a>
-            <a href="#budget-builder" className="hover:text-[#A85A68] transition-colors">
-              Request Budget
-            </a>
-            <a href="#categories" className="hover:text-[#A85A68] transition-colors">
+            {visibility.showCustomizer && (
+              <a href="#budget-builder" className="hover:text-[var(--accent)] transition-colors">
+                Request Budget
+              </a>
+            )}
+            <a href="#categories" className="hover:text-[var(--accent)] transition-colors">
               Jenis Buket
             </a>
-            <a href="#reviews" className="hover:text-[#A85A68] transition-colors">
-              Testimoni
-            </a>
-            <a href="#studio" className="hover:text-[#A85A68] transition-colors">
-              Studio &amp; Pengiriman
-            </a>
-            <a href="#faqs" className="hover:text-[#A85A68] transition-colors">
-              FAQ
-            </a>
+            {visibility.showReviews && (
+              <a href="#reviews" className="hover:text-[var(--accent)] transition-colors">
+                Testimoni
+              </a>
+            )}
+            {visibility.showStory && (
+              <a href="#studio" className="hover:text-[var(--accent)] transition-colors">
+                Studio &amp; Pengiriman
+              </a>
+            )}
+            {visibility.showFaq && (
+              <a href="#faq" className="hover:text-[var(--accent)] transition-colors">
+                FAQ
+              </a>
+            )}
           </nav>
 
           <div className="flex items-center gap-3">
             <a
-              href={`https://wa.me/${RUMAH_PHONE}?text=${encodeURIComponent("Halo Rumah Bouquet, saya ingin pesan/konsultasi buket urgent hari ini.")}`}
+              href={`https://wa.me/${clientWa}?text=${encodeURIComponent(`Halo ${brand}, saya ingin pesan/konsultasi buket urgent hari ini.`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-[#A85A68] px-4 py-2 font-ui text-[10px] font-semibold uppercase tracking-[0.14em] text-white hover:bg-[#8e4552] transition-colors shadow-xs"
+              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 font-ui text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--accent-contrast)] hover:opacity-90 transition-opacity shadow-xs"
             >
-              <span>WA 0859-6651-4774</span>
+              <span>WA {displayWa}</span>
               <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             </a>
 
             <button
               type="button"
               onClick={openCart}
-              className="flex items-center gap-2 rounded-full border border-[#EFE6E8] bg-white px-4 py-2 font-ui text-[10.5px] font-medium uppercase tracking-[0.16em] text-[#241A1E] hover:border-[#A85A68] transition-colors shadow-sm"
+              className="flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 font-ui text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink hover:border-[var(--accent)] transition-colors shadow-sm"
             >
               <span>Keranjang</span>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#A85A68] text-[9.5px] font-semibold text-white">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[9.5px] font-semibold text-[var(--accent-contrast)]">
                 {cartLineCount}
               </span>
             </button>
@@ -203,39 +256,35 @@ export function FloristExperience() {
       </header>
 
       {/* 2. CENTERED ARCHITECTURAL MAGAZINE COVER SHOWCASE HERO */}
-      <section id="top" className="relative border-b border-[#EFE6E8] bg-gradient-to-b from-[#FDFBF9] via-[#FAF5F6] to-[#FDFBF9] px-6 pt-12 pb-20 sm:px-10 sm:pt-16 sm:pb-28 overflow-hidden">
+      <section id="top" className="relative border-b border-line bg-canvas px-6 pt-12 pb-20 sm:px-10 sm:pt-16 sm:pb-28 overflow-hidden">
         <div className="mx-auto max-w-[1360px] text-center">
           {/* Top Centered Pill */}
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#A85A68]/10 px-4 py-1.5 text-[9.5px] font-ui uppercase tracking-[0.22em] text-[#A85A68] font-bold">
-            <span className="h-2 w-2 rounded-full bg-[#A85A68] animate-pulse" />
-            Florist &amp; Gift Studio · Pondok Kelapa, Duren Sawit, Jakarta Timur
+          <div className="inline-flex items-center gap-2 rounded-full bg-surface border border-line px-4 py-1.5 text-[9.5px] font-ui uppercase tracking-[0.22em] text-accent font-bold">
+            <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+            {hero.kicker}
           </div>
 
           {/* Quick Category Badges Row */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-            <span className="rounded-full border border-[#EFE6E8] bg-white px-3 py-1 font-ui text-[9.5px] font-semibold text-[#241A1E] shadow-2xs">
-              💸 Money Bouquet (Uang)
-            </span>
-            <span className="rounded-full border border-[#EFE6E8] bg-white px-3 py-1 font-ui text-[9.5px] font-semibold text-[#241A1E] shadow-2xs">
-              🎓 Buket Wisuda &amp; Boneka Toga
-            </span>
-            <span className="rounded-full border border-[#EFE6E8] bg-white px-3 py-1 font-ui text-[9.5px] font-semibold text-[#241A1E] shadow-2xs">
-              🌹 Bunga Sabun Awet
-            </span>
-            <span className="rounded-full border border-[#EFE6E8] bg-white px-3 py-1 font-ui text-[9.5px] font-semibold text-[#241A1E] shadow-2xs">
-              🍓 Buket Snack &amp; Cokelat
-            </span>
+            {hero.badges.map((badge) => (
+              <span
+                key={badge}
+                className="rounded-full border border-line bg-surface px-3 py-1 font-ui text-[9.5px] font-semibold text-ink shadow-2xs"
+              >
+                {badge}
+              </span>
+            ))}
           </div>
 
           {/* Centered Bold Headline */}
-          <h1 className="mt-6 font-heading text-[clamp(2.8rem,5.8vw,5.2rem)] leading-[0.98] tracking-[-0.03em] text-[#241A1E]">
-            Buket Impian, <br className="sm:hidden" />
-            <span className="text-[#A85A68] italic font-light font-serif">Bebas Request Budget.</span> <br />
-            Bisa Urgent Hari Ini.
+          <h1 className="mt-6 font-heading text-[clamp(2.8rem,5.8vw,5.2rem)] leading-[0.98] tracking-[-0.03em] text-ink">
+            {hero.titleLead} <br className="sm:hidden" />
+            <span className="text-accent italic font-light font-serif">{hero.titleAccent}</span> <br />
+            {hero.titleTail}
           </h1>
 
-          <p className="mt-5 max-w-[640px] mx-auto font-body text-[14.5px] leading-[1.8] text-[#75636A]">
-            Spesialis buket uang rapi tanpa lem, buket wisuda kelulusan dengan boneka toga, bunga sabun awet abadi, dan mawar merah segar. Siap kirim instan se-Jabodetabek atau self-pickup ke studio Pondok Kelapa.
+          <p className="mt-5 max-w-[640px] mx-auto font-body text-[14.5px] leading-[1.8] text-muted">
+            {hero.description}
           </p>
 
           {/* Centered Actions */}
@@ -243,25 +292,25 @@ export function FloristExperience() {
             <Magnetic>
               <a
                 href="#collection"
-                className="inline-flex items-center gap-3 rounded-full bg-[#A85A68] px-8 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-[#8e4552] transition-all shadow-md shadow-[#A85A68]/25 hover:shadow-lg"
+                className="inline-flex items-center gap-3 rounded-full bg-accent px-8 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-contrast)] hover:opacity-90 transition-all shadow-md"
               >
-                Lihat Pilihan Buket
+                {hero.primaryCta}
                 <svg viewBox="0 0 14 14" fill="none" className="h-3 w-3" aria-hidden="true">
                   <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
             </Magnetic>
             <a
-              href="#budget-builder"
-              className="inline-flex items-center gap-2 rounded-full border border-[#EFE6E8] bg-white px-7 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#241A1E] hover:border-[#A85A68] hover:text-[#A85A68] transition-colors shadow-sm"
+              href={visibility.showCustomizer ? "#budget-builder" : "#collection"}
+              className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-7 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors shadow-sm"
             >
-              Hitung Budget Sendiri ↓
+              {hero.secondaryCta}
             </a>
             <a
-              href={`https://wa.me/${RUMAH_PHONE}?text=${encodeURIComponent("Halo Rumah Bouquet, saya mau tanya slot urgent order buket hari ini.")}`}
+              href={`https://wa.me/${clientWa}?text=${encodeURIComponent(`Halo ${brand}, saya mau tanya slot urgent order buket hari ini.`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[#A85A68] hover:underline px-2 py-3.5"
+              className="inline-flex items-center gap-1.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.14em] text-accent hover:underline px-2 py-3.5"
             >
               <span>Chat WA 24 Jam Standby ↗</span>
             </a>
@@ -270,17 +319,17 @@ export function FloristExperience() {
           {/* 3-COLUMN ASYMMETRIC PHOTO MASONRY GALLERY */}
           <div className="mt-14 relative max-w-[1240px] mx-auto">
             {/* Floating Floral Pills around the Masonry */}
-            <div className="hidden lg:flex absolute -top-5 left-4 z-20 items-center gap-2 rounded-full border border-[#EFE6E8] bg-white/95 px-4 py-2 shadow-lg backdrop-blur-md">
+            <div className="hidden lg:flex absolute -top-5 left-4 z-20 items-center gap-2 rounded-full border border-line bg-surface/95 px-4 py-2 shadow-lg backdrop-blur-md">
               <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
-              <span className="font-ui text-[9px] uppercase tracking-[0.18em] font-bold text-[#241A1E]">
-                Bisa Request Budget · Mulai 50k
+              <span className="font-ui text-[9px] uppercase tracking-[0.18em] font-bold text-ink">
+                {hero.stats[0]?.value} · {hero.stats[0]?.label}
               </span>
             </div>
 
-            <div className="hidden lg:flex absolute -top-5 right-4 z-20 items-center gap-2 rounded-full border border-[#EFE6E8] bg-white/95 px-4 py-2 shadow-lg backdrop-blur-md">
+            <div className="hidden lg:flex absolute -top-5 right-4 z-20 items-center gap-2 rounded-full border border-line bg-surface/95 px-4 py-2 shadow-lg backdrop-blur-md">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span className="font-ui text-[9px] uppercase tracking-[0.18em] font-bold text-[#241A1E]">
-                ⚡ Urgent Order &amp; Grab/Gojek Instant
+              <span className="font-ui text-[9px] uppercase tracking-[0.18em] font-bold text-ink">
+                ⚡ {hero.stats[1]?.value} · {hero.stats[1]?.label}
               </span>
             </div>
 
@@ -288,12 +337,13 @@ export function FloristExperience() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
               {/* Left Column: Money Bouquet Feature */}
               <div className="md:col-span-3 text-left">
-                <div className="group relative aspect-[3.5/4.5] rounded-3xl overflow-hidden border border-[#EFE6E8] bg-white p-2 shadow-xl transition-all duration-500 hover:shadow-2xl">
+                <div className="group relative aspect-[3.5/4.5] rounded-3xl overflow-hidden border border-line bg-surface p-2 shadow-xl transition-all duration-500 hover:shadow-2xl">
                   <div className="relative h-full w-full rounded-2xl overflow-hidden">
                     <Image
-                      src="/images/florist/money-bouquet-real.jpg"
-                      alt="Money Bouquet Kipas Mewah Rumah Bouquet"
+                      src={leftHeroImg.src}
+                      alt={leftHeroImg.alt}
                       fill
+                      unoptimized={leftHeroImg.src.startsWith("data:") || leftHeroImg.src.startsWith("http")}
                       sizes="(max-width: 768px) 100vw, 320px"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -303,7 +353,7 @@ export function FloristExperience() {
                         Paling Laris
                       </span>
                       <span className="font-heading text-[17px] font-normal block">
-                        Money Bouquet
+                        {leftHeroImg.caption || "Money Bouquet"}
                       </span>
                       <span className="font-ui text-[9px] text-white/90 block mt-0.5">
                         Bebas Request Lembaran Uang
@@ -315,13 +365,14 @@ export function FloristExperience() {
 
               {/* Center Column: Elevated Focal Signature Bouquet */}
               <div className="md:col-span-6">
-                <div className="group relative aspect-[4/4.8] rounded-3xl overflow-hidden border-2 border-[#A85A68]/30 bg-white p-2.5 shadow-2xl shadow-[#A85A68]/20 transition-all duration-500 hover:border-[#A85A68]">
+                <div className="group relative aspect-[4/4.8] rounded-3xl overflow-hidden border-2 border-[var(--accent)]/30 bg-surface p-2.5 shadow-2xl transition-all duration-500 hover:border-[var(--accent)]">
                   <div className="relative h-full w-full rounded-2xl overflow-hidden">
                     <Image
-                      src="/images/florist/hero.jpg"
-                      alt="Signature Florist Collection Rumah Bouquet"
+                      src={mainHeroImg.src}
+                      alt={mainHeroImg.alt}
                       fill
                       priority
+                      unoptimized={mainHeroImg.src.startsWith("data:") || mainHeroImg.src.startsWith("http")}
                       sizes="(max-width: 1024px) 100vw, 620px"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -337,14 +388,14 @@ export function FloristExperience() {
                           Signature Studio Showcase
                         </span>
                         <span className="font-heading text-[24px] sm:text-[28px] font-light leading-tight block mt-1">
-                          Rumah Bouquet Florist &amp; Gift
+                          {brand}
                         </span>
                         <span className="font-ui text-[10px] text-white/80 block mt-1">
-                          Pondok Kelapa, Duren Sawit · Jaktim
+                          {brandSuffix}
                         </span>
                       </div>
-                      <span className="rounded-full bg-[#A85A68] px-4 py-1.5 font-ui text-[9.5px] font-bold uppercase tracking-[0.14em] text-white shadow-md">
-                        Mulai 50k
+                      <span className="rounded-full bg-accent px-4 py-1.5 font-ui text-[9.5px] font-bold uppercase tracking-[0.14em] text-[var(--accent-contrast)] shadow-md">
+                        Mulai {formatIDR(activeNiche.products[0]?.price ?? 50000)}
                       </span>
                     </div>
                   </div>
@@ -354,12 +405,13 @@ export function FloristExperience() {
               {/* Right Column: Stacked Graduation & Fresh Roses */}
               <div className="md:col-span-3 space-y-4 text-left">
                 {/* Top Stack: Graduation Bouquet */}
-                <div className="group relative aspect-[16/11] rounded-2xl overflow-hidden border border-[#EFE6E8] bg-white p-1.5 shadow-lg transition-all duration-500 hover:shadow-xl">
+                <div className="group relative aspect-[16/11] rounded-2xl overflow-hidden border border-line bg-surface p-1.5 shadow-lg transition-all duration-500 hover:shadow-xl">
                   <div className="relative h-full w-full rounded-xl overflow-hidden">
                     <Image
-                      src="/images/florist/graduation-bouquet.jpg"
-                      alt="Buket Wisuda Boneka Toga"
+                      src={rightTopImg.src}
+                      alt={rightTopImg.alt}
                       fill
+                      unoptimized={rightTopImg.src.startsWith("data:") || rightTopImg.src.startsWith("http")}
                       sizes="(max-width: 768px) 100vw, 320px"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -369,14 +421,14 @@ export function FloristExperience() {
                         Spesial Wisuda
                       </span>
                       <span className="font-heading text-[15px] font-normal block">
-                        Buket Boneka &amp; Selempang
+                        {rightTopImg.caption || "Buket Boneka & Selempang"}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Bottom Stack: Fresh Red Roses */}
-                <div className="group relative aspect-[16/11] rounded-2xl overflow-hidden border border-[#EFE6E8] bg-white p-1.5 shadow-lg transition-all duration-500 hover:shadow-xl">
+                <div className="group relative aspect-[16/11] rounded-2xl overflow-hidden border border-line bg-surface p-1.5 shadow-lg transition-all duration-500 hover:shadow-xl">
                   <div className="relative h-full w-full rounded-xl overflow-hidden">
                     <Image
                       src="/images/florist/fresh-rose.jpg"
@@ -406,7 +458,8 @@ export function FloristExperience() {
       <InteractiveShowcaseSlider />
 
       {/* 4. INTERACTIVE BUDGET BUILDER (FITUR UNGGULAN: REQUEST BUDGET) */}
-      <section id="budget-builder" className="border-t border-[#EFE6E8] px-6 py-16 sm:px-10 sm:py-24 bg-white">
+      {visibility.showCustomizer && (
+      <section id="budget-builder" className="border-t border-line px-6 py-16 sm:px-10 sm:py-24 bg-surface">
         <div className="mx-auto max-w-[1400px]">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#EFE6E8] pb-6">
             <div>
@@ -575,31 +628,32 @@ export function FloristExperience() {
                 href={consultHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-6 w-full rounded-full bg-[#A85A68] py-3.5 font-ui text-[11px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-[#8e4552] transition-colors shadow-md flex items-center justify-center gap-2 text-center"
+                className="mt-6 w-full rounded-full bg-accent py-3.5 font-ui text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-contrast)] hover:opacity-90 transition-opacity shadow-md flex items-center justify-center gap-2 text-center"
               >
                 <span>Kirim Request ke WhatsApp</span>
                 <span>↗</span>
               </a>
 
-              <p className="mt-3 text-center font-body text-[10.5px] text-[#75636A]">
-                Studio Pondok Kelapa, Jakarta Timur · Respon cepat 24 jam
+              <p className="mt-3 text-center font-body text-[10.5px] text-muted">
+                {footer.address} · Respon cepat 24 jam
               </p>
             </div>
           </div>
         </div>
       </section>
+      )}
 
       {/* 5. CATEGORIES GRID SECTION */}
-      <section id="categories" className="border-t border-[#EFE6E8] px-6 py-16 sm:px-10 sm:py-24 bg-[#FDFBF9]">
+      <section id="categories" className="border-t border-line px-6 py-16 sm:px-10 sm:py-24 bg-canvas">
         <div className="mx-auto max-w-[1400px]">
           <div className="max-w-[620px]">
-            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-[#A85A68] font-bold">
+            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-accent font-bold">
               Kategori Terlaris
             </span>
-            <h2 className="mt-2 font-heading text-[clamp(2.2rem,4vw,3.4rem)] leading-[1.04] text-[#241A1E]">
+            <h2 className="mt-2 font-heading text-[clamp(2.2rem,4vw,3.4rem)] leading-[1.04] text-ink">
               Pilihan Buket untuk Beragam Momen.
             </h2>
-            <p className="mt-3 font-body text-[13px] text-[#75636A]">
+            <p className="mt-3 font-body text-[13px] text-muted">
               Semua jenis buket dikerjakan dengan bahan rapi dan berkualitas tinggi.
             </p>
           </div>
@@ -608,40 +662,40 @@ export function FloristExperience() {
             {CATEGORIES.map((cat) => (
               <div
                 key={cat.id}
-                className="rounded-3xl border border-[#EFE6E8] bg-white p-5 flex flex-col justify-between hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="rounded-3xl border border-line bg-surface p-5 flex flex-col justify-between hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
                 <div>
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-[#EFE6E8] mb-4">
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-line mb-4">
                     <Image
                       src={cat.image}
                       alt={cat.name}
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute top-2.5 right-2.5 rounded-full bg-[#A85A68] text-white px-2.5 py-0.5 font-ui text-[8px] font-semibold uppercase tracking-[0.14em]">
+                    <div className="absolute top-2.5 right-2.5 rounded-full bg-accent text-[var(--accent-contrast)] px-2.5 py-0.5 font-ui text-[8px] font-semibold uppercase tracking-[0.14em]">
                       {cat.tag}
                     </div>
                   </div>
 
-                  <h3 className="font-heading text-[18px] text-[#241A1E] font-semibold leading-snug">
+                  <h3 className="font-heading text-[18px] text-ink font-semibold leading-snug">
                     {cat.name}
                   </h3>
-                  <p className="mt-2 font-body text-[11.5px] leading-relaxed text-[#75636A]">
+                  <p className="mt-2 font-body text-[11.5px] leading-relaxed text-muted">
                     {cat.desc}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#EFE6E8] flex items-baseline justify-between">
-                  <span className="font-heading text-[16px] font-bold text-[#A85A68]">
+                <div className="mt-6 pt-4 border-t border-line flex items-baseline justify-between">
+                  <span className="font-heading text-[16px] font-bold text-accent">
                     {cat.priceRange}
                   </span>
                   <a
-                    href={`https://wa.me/${RUMAH_PHONE}?text=${encodeURIComponent(
-                      `Halo Rumah Bouquet, saya tertarik dengan kategori ${cat.name}. Boleh minta info katalog dan harganya?`
+                    href={`https://wa.me/${clientWa}?text=${encodeURIComponent(
+                      `Halo ${brand}, saya tertarik dengan kategori ${cat.name}. Boleh minta info katalog dan harganya?`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[9.5px] font-ui font-bold uppercase tracking-[0.14em] text-[#241A1E] hover:text-[#A85A68]"
+                    className="inline-flex items-center gap-1 text-[9.5px] font-ui font-bold uppercase tracking-[0.14em] text-ink hover:text-[var(--accent)]"
                   >
                     <span>Tanya WA</span>
                     <span>↗</span>
@@ -653,182 +707,188 @@ export function FloristExperience() {
         </div>
       </section>
 
-      {/* 6. STUDIO PONDOK KELAPA & HOW TO ORDER */}
-      <section id="studio" className="border-t border-[#EFE6E8] px-6 py-16 sm:px-10 sm:py-24 bg-white">
-        <div className="mx-auto max-w-[1400px]">
-          <div className="rounded-3xl border border-[#EFE6E8] bg-[#FDFBF9] p-8 sm:p-14">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-7">
-                <span className="inline-block rounded-full bg-[#A85A68]/10 text-[#A85A68] px-3.5 py-1 font-ui text-[9px] uppercase tracking-[0.2em] font-bold">
-                  Lokasi Studio &amp; Pengiriman
-                </span>
-                <h3 className="mt-3 font-heading text-[28px] sm:text-[38px] text-[#241A1E] leading-tight">
-                  Studio Pondok Kelapa, <br />
-                  <span className="italic font-light text-[#A85A68]">siap kirim instan se-Jabodetabek.</span>
-                </h3>
-                <p className="mt-3 font-body text-[13.5px] leading-relaxed text-[#75636A]">
-                  Butuh buket mendadak untuk sidang hari ini atau acara wisuda besok pagi? Lokasi kami di Pondok Kelapa, Jakarta Timur, sangat strategis untuk pengiriman cepat ke Jakarta, Bekasi, Depok, dan sekitarnya.
-                </p>
-
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-[#EFE6E8] pt-5">
-                  {ORDER_STEPS.map((s) => (
-                    <div key={s.number}>
-                      <span className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-[#A85A68] font-bold block">
-                        Langkah {s.number}
-                      </span>
-                      <span className="font-ui text-[12px] font-semibold text-[#241A1E] mt-1 block">
-                        {s.action}
-                      </span>
-                      <span className="font-body text-[10.5px] text-[#75636A] mt-0.5 block">
-                        {s.detail}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-8 flex flex-wrap items-center gap-4">
-                  <a
-                    href={`https://wa.me/${RUMAH_PHONE}?text=${encodeURIComponent(
-                      "Halo Rumah Bouquet, saya ingin pesan buket untuk pengiriman hari ini / self pickup di Pondok Kelapa."
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#241A1E] px-7 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-[#A85A68] transition-colors"
-                  >
-                    <span>Hubungi WA Sekarang</span>
-                    <span>↗</span>
-                  </a>
-                  <span className="font-body text-[11px] text-[#75636A]">
-                    Pondok Kelapa, Duren Sawit, Jakarta Timur
+      {/* 6. STUDIO PONDOK KELAPA & STORY */}
+      {visibility.showStory && (
+        <section id="studio" className="border-t border-line px-6 py-16 sm:px-10 sm:py-24 bg-surface">
+          <div className="mx-auto max-w-[1400px]">
+            <div className="rounded-3xl border border-line bg-canvas p-8 sm:p-14">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div className="lg:col-span-7">
+                  <span className="inline-block rounded-full bg-surface border border-line text-accent px-3.5 py-1 font-ui text-[9px] uppercase tracking-[0.2em] font-bold">
+                    {story.kicker}
                   </span>
-                </div>
-              </div>
+                  <h3 className="mt-3 font-heading text-[28px] sm:text-[38px] text-ink leading-tight">
+                    {story.title}
+                  </h3>
+                  <div className="mt-3 space-y-2.5 font-body text-[13.5px] leading-relaxed text-muted">
+                    {story.paragraphs.map((p, idx) => (
+                      <p key={idx}>{p}</p>
+                    ))}
+                  </div>
 
-              <div className="lg:col-span-5 relative">
-                <div className="relative aspect-square rounded-2xl overflow-hidden border border-[#EFE6E8]">
-                  <Image
-                    src="/images/florist/hero.jpg"
-                    alt="Rumah Bouquet Studio"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-line pt-5">
+                    {ORDER_STEPS.map((s) => (
+                      <div key={s.number}>
+                        <span className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-accent font-bold block">
+                          Langkah {s.number}
+                        </span>
+                        <span className="font-ui text-[12px] font-semibold text-ink mt-1 block">
+                          {s.action}
+                        </span>
+                        <span className="font-body text-[10.5px] text-muted mt-0.5 block">
+                          {s.detail}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
 
-      {/* 7. AUTHENTIC SOCIAL PROOF & CUSTOMER REVIEWS */}
-      <section id="reviews" className="border-t border-[#EFE6E8] bg-[#FDFBF9] px-6 py-16 sm:px-10 sm:py-24">
-        <div className="mx-auto max-w-[1400px]">
-          {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#EFE6E8] pb-8">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#A85A68]/10 px-3.5 py-1 font-ui text-[9px] uppercase tracking-[0.2em] font-bold text-[#A85A68]">
-                <span>⭐ 4.98 / 5.0</span>
-                <span className="h-1 w-1 rounded-full bg-[#A85A68]" />
-                <span>8.500+ Buket Terangkai</span>
-              </div>
-              <h2 className="mt-3 font-heading text-[clamp(2.2rem,4vw,3.6rem)] leading-[1.04] text-[#241A1E]">
-                Momen Bahagia Bersama <br />
-                <span className="italic font-light text-[#A85A68]">Rumah Bouquet Pondok Kelapa.</span>
-              </h2>
-            </div>
-
-            {/* Quick Proof Pills */}
-            <div className="flex items-center gap-6">
-              <div className="text-right">
-                <div className="font-heading text-[24px] font-bold text-[#A85A68]">8.500+</div>
-                <div className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-[#75636A]">
-                  Buket Terkirim
-                </div>
-              </div>
-              <div className="h-8 w-px bg-[#EFE6E8]" />
-              <div className="text-right">
-                <div className="font-heading text-[24px] font-bold text-emerald-600">24 Jam</div>
-                <div className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-[#75636A]">
-                  Fast Response WA
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Filter Tabs */}
-          <div className="mt-8 flex flex-wrap gap-2">
-            {[
-              { id: "all", label: "Semua Ulasan (4)" },
-              { id: "wisuda", label: "🎓 Wisuda & Boneka Toga" },
-              { id: "money", label: "💸 Money Bouquet" },
-              { id: "soap", label: "🌹 Bunga Sabun Awet" },
-              { id: "urgent", label: "⚡ Request Budget & Urgent" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveFloristFilter(tab.id)}
-                className={cn(
-                  "rounded-full px-4 py-1.5 font-ui text-[11px] font-medium transition-all",
-                  activeFloristFilter === tab.id
-                    ? "bg-[#A85A68] text-white shadow-xs font-semibold"
-                    : "bg-white border border-[#EFE6E8] text-[#75636A] hover:text-[#241A1E] hover:border-[#A85A68]"
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Review Cards Grid */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {FLORIST_REVIEWS.filter(
-              (r) => activeFloristFilter === "all" || r.category === activeFloristFilter
-            ).map((rev) => (
-              <div
-                key={rev.id}
-                className="rounded-3xl border border-[#EFE6E8] bg-white p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-[#A85A68]/10 hover:border-[#A85A68]/50"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex text-amber-500 text-xs tracking-wider">
-                      {"★".repeat(rev.stars)}
-                    </div>
-                    <span className="font-ui text-[8px] text-[#75636A] uppercase tracking-wider">
-                      {rev.date}
+                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                    <a
+                      href={`https://wa.me/${clientWa}?text=${encodeURIComponent(
+                        `Halo ${brand}, saya ingin pesan buket untuk pengiriman hari ini / self pickup.`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-surface hover:bg-[var(--accent)] transition-colors"
+                    >
+                      <span>Hubungi WA Sekarang</span>
+                      <span>↗</span>
+                    </a>
+                    <span className="font-body text-[11px] text-muted">
+                      {footer.address}
                     </span>
                   </div>
-
-                  <p className="mt-3 font-body text-[12.5px] leading-relaxed text-[#241A1E]/90 italic">
-                    &ldquo;{rev.review}&rdquo;
-                  </p>
                 </div>
 
-                <div className="mt-5 pt-4 border-t border-[#EFE6E8]">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#A85A68]/15 font-ui text-[10px] font-bold text-[#A85A68]">
-                      {rev.avatar}
-                    </div>
-                    <div>
-                      <div className="font-ui text-[11px] font-bold text-[#241A1E]">
-                        {rev.name}
-                      </div>
-                      <div className="font-ui text-[9px] text-[#75636A]">
-                        {rev.location}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-2 font-ui text-[8.5px] text-[#A85A68] font-medium bg-[#FDFBF9] px-2 py-0.5 rounded-full border border-[#EFE6E8] inline-block">
-                    {rev.tag}
+                <div className="lg:col-span-5 relative">
+                  <div className="relative aspect-square rounded-2xl overflow-hidden border border-line">
+                    <Image
+                      src={story.images[0]?.src || "/images/florist/hero.jpg"}
+                      alt={story.images[0]?.alt || `${brand} Studio`}
+                      fill
+                      unoptimized={(story.images[0]?.src || "").startsWith("data:") || (story.images[0]?.src || "").startsWith("http")}
+                      className="object-cover"
+                    />
                   </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* 7. AUTHENTIC SOCIAL PROOF & CUSTOMER REVIEWS */}
+      {visibility.showReviews && (
+        <section id="reviews" className="border-t border-line bg-canvas px-6 py-16 sm:px-10 sm:py-24">
+          <div className="mx-auto max-w-[1400px]">
+            {/* Section Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-line pb-8">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-surface border border-line px-3.5 py-1 font-ui text-[9px] uppercase tracking-[0.2em] font-bold text-accent">
+                  <span>⭐ 4.98 / 5.0</span>
+                  <span className="h-1 w-1 rounded-full bg-accent" />
+                  <span>8.500+ Buket Terangkai</span>
+                </div>
+                <h2 className="mt-3 font-heading text-[clamp(2.2rem,4vw,3.6rem)] leading-[1.04] text-ink">
+                  Momen Bahagia Bersama <br />
+                  <span className="italic font-light text-accent">{brand}.</span>
+                </h2>
+              </div>
+
+              {/* Quick Proof Pills */}
+              <div className="flex items-center gap-6">
+                <div className="text-right">
+                  <div className="font-heading text-[24px] font-bold text-accent">8.500+</div>
+                  <div className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-muted">
+                    Buket Terkirim
+                  </div>
+                </div>
+                <div className="h-8 w-px bg-[var(--border)]" />
+                <div className="text-right">
+                  <div className="font-heading text-[24px] font-bold text-emerald-600">24 Jam</div>
+                  <div className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-muted">
+                    Fast Response WA
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="mt-8 flex flex-wrap gap-2">
+              {[
+                { id: "all", label: `Semua Ulasan (${reviews.length})` },
+                { id: "wisuda", label: "🎓 Wisuda & Boneka Toga" },
+                { id: "money", label: "💸 Money Bouquet" },
+                { id: "soap", label: "🌹 Bunga Sabun Awet" },
+                { id: "urgent", label: "⚡ Request Budget & Urgent" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveFloristFilter(tab.id)}
+                  className={cn(
+                    "rounded-full px-4 py-1.5 font-ui text-[11px] font-medium transition-all",
+                    activeFloristFilter === tab.id
+                      ? "bg-accent text-[var(--accent-contrast)] shadow-xs font-semibold"
+                      : "bg-surface border border-line text-muted hover:text-ink hover:border-[var(--accent)]"
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Review Cards Grid */}
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {reviews.filter(
+                (r) => activeFloristFilter === "all" || r.category === activeFloristFilter
+              ).map((rev) => (
+                <div
+                  key={rev.id}
+                  className="rounded-3xl border border-line bg-surface p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:border-[var(--accent)]/50"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex text-amber-500 text-xs tracking-wider">
+                        {"★".repeat(rev.stars)}
+                      </div>
+                      <span className="font-ui text-[8px] text-muted uppercase tracking-wider">
+                        {rev.date}
+                      </span>
+                    </div>
+
+                    <p className="mt-3 font-body text-[12.5px] leading-relaxed text-ink/90 italic">
+                      &ldquo;{rev.review}&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="mt-5 pt-4 border-t border-line">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-canvas border border-line font-ui text-[10px] font-bold text-accent">
+                        {rev.avatar}
+                      </div>
+                      <div>
+                        <div className="font-ui text-[11px] font-bold text-ink">
+                          {rev.name}
+                        </div>
+                        <div className="font-ui text-[9px] text-muted">
+                          {rev.location}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-2 font-ui text-[8.5px] text-accent font-medium bg-canvas px-2 py-0.5 rounded-full border border-line inline-block">
+                      {rev.tag}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 8. FAQ ACCORDION */}
-      <FaqAccordion />
+      {visibility.showFaq && <FaqAccordion />}
 
       {/* 9. FOOTER */}
       <SiteFooter />

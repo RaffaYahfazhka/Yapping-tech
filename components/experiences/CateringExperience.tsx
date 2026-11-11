@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useShowcase } from "@/context/ShowcaseContext";
 import { FaqAccordion } from "@/components/FaqAccordion";
@@ -165,6 +165,21 @@ const GLOW_REVIEWS = [
 
 export function CateringExperience() {
   const { activeNiche, addToCart, openCart, cartLineCount } = useShowcase();
+  const { brand, brandSuffix, hero, story, announcement, footer, products, cms } = activeNiche;
+  const visibility = cms?.visibility ?? {
+    showAnnouncement: true,
+    showCustomizer: true,
+    showStory: true,
+    showReviews: true,
+    showFaq: true,
+  };
+  const reviews = cms?.reviews ?? GLOW_REVIEWS;
+  const clientWa =
+    cms?.whatsappOrderNumber?.replace(/[^0-9]/g, "") ||
+    footer.phone.replace(/[^0-9]/g, "") ||
+    GLOW_PHONE;
+  const displayWa = footer.phone || "0819-9988-8790";
+
   const [selectedPkgIndex, setSelectedPkgIndex] = useState(0);
   const [paxCount, setPaxCount] = useState(15);
   const [selectedDuration, setSelectedDuration] = useState<"1day" | "5day" | "20day">("1day");
@@ -215,68 +230,120 @@ export function CateringExperience() {
     },
   ];
 
-  const currentPkg = PACKAGES[selectedPkgIndex];
-  const activeProduct = activeNiche.products.find((p) => p.id === currentPkg.id) ?? activeNiche.products[0];
+  const dynamicPackages = useMemo(() => {
+    const source = products.length > 0 ? products : [];
+    if (source.length === 0) return PACKAGES;
+    return source.map((p, idx) => ({
+      id: p.id,
+      name: p.name,
+      code: p.badge || `PKG-0${idx + 1}`,
+      subtitle: p.subtitle,
+      pricePerPax: p.price,
+      minPax: p.minQty,
+      calories: p.specs[0]?.value || "400-500 Kcal",
+      protein: p.highlights[0] || "Nutrisi Terukur",
+      serviceType: p.specs[1]?.value || "Eco Seal Bento",
+      crew: "Pengiriman Suhu Terkontrol",
+      highlights: p.highlights,
+      description: p.description,
+      image: p.image,
+      productRef: p,
+    }));
+  }, [products]);
+
+  const safeIndex = selectedPkgIndex < dynamicPackages.length ? selectedPkgIndex : 0;
+  const currentPkg = dynamicPackages[safeIndex] ?? dynamicPackages[0];
+  const activeProduct = products.find((p) => p.id === currentPkg.id) ?? products[0];
 
   const durationMultiplier = selectedDuration === "1day" ? 1 : selectedDuration === "5day" ? 5 : 20;
   const discountMultiplier = selectedDuration === "20day" ? 0.9 : selectedDuration === "5day" ? 0.95 : 1;
   const estimatedSubtotal = Math.round(currentPkg.pricePerPax * paxCount * durationMultiplier * discountMultiplier);
 
   const handleAddCustomBanquet = () => {
-    addToCart(activeProduct, paxCount);
-    openCart();
+    if (activeProduct) {
+      addToCart(activeProduct, paxCount);
+      openCart();
+    }
   };
 
-  const consultationHref = `https://wa.me/${GLOW_PHONE}?text=${encodeURIComponent(
-    `Halo Glow House, saya ingin konsultasi program catering sehat untuk ${paxCount} pax paket ${currentPkg.name} (${selectedDuration === "1day" ? "1 kali acara" : selectedDuration === "5day" ? "program 5 hari" : "program bulanan 20 hari"}). Mohon info detailnya, terima kasih!`
+  const consultationHref = `https://wa.me/${clientWa}?text=${encodeURIComponent(
+    `Halo ${brand}, saya ingin konsultasi program catering sehat untuk ${paxCount} pax paket ${currentPkg.name} (${selectedDuration === "1day" ? "1 kali acara" : selectedDuration === "5day" ? "program 5 hari" : "program bulanan 20 hari"}). Mohon info detailnya, terima kasih!`
   )}`;
 
+  const mainHeroImg = hero.images[0] ?? {
+    src: "/images/catering/hero.jpg",
+    alt: `Menu Sehat ${brand}`,
+    caption: "Personalized Meal Bento",
+  };
+
   return (
-    <div className="min-h-screen text-[#1F1626]" style={{ backgroundColor: "#FAF9FC" }}>
+    <div className="min-h-screen bg-canvas text-ink">
       {/* 1. SWISS UTILITARIAN CLINICAL HEADER */}
-      <header className="border-b border-[#E9E3F0] bg-[#FAF9FC]/95 backdrop-blur-md sticky top-[52px] z-30">
-        <div className="mx-auto max-w-[1440px] px-6 py-2 border-b border-[#E9E3F0] flex items-center justify-between text-[8.5px] font-ui uppercase tracking-[0.2em] text-[#6B5E75]">
-          <span className="flex items-center gap-2 font-medium text-[#1F1626]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#451176] animate-pulse" />
-            {activeNiche.announcement.status}: {activeNiche.announcement.messages[0]}
-          </span>
-          <span className="hidden sm:inline font-ui text-[#451176] font-semibold">
-            Dapur Kebayoran Baru (Belakang Walikota Jaksel) · Pengiriman Harian 2x Se-Jabodetabek
-          </span>
-          <span className="hidden md:inline font-bold text-[#451176]">WA: 0819-9988-8790</span>
-        </div>
+      <header className="border-b border-line bg-canvas/95 backdrop-blur-md sticky top-0 z-30">
+        {visibility.showAnnouncement && (
+          <div className="mx-auto max-w-[1440px] px-6 py-2 border-b border-line flex items-center justify-between text-[8.5px] font-ui uppercase tracking-[0.2em] text-muted">
+            <span className="flex items-center gap-2 font-medium text-ink">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+              {announcement.status}: {announcement.messages[0]}
+            </span>
+            <span className="hidden sm:inline font-ui text-accent font-semibold">
+              {announcement.messages[1] || footer.address}
+            </span>
+            <span className="hidden md:inline font-bold text-accent">WA: {displayWa}</span>
+          </div>
+        )}
 
         <div className="mx-auto max-w-[1440px] px-6 py-3.5 sm:px-10 flex items-center justify-between">
           <a href="#top" className="flex items-center gap-3">
-            <Image
-              src="/images/catering/logo.png"
-              alt="Glow House - Healthy Meals, Personalized"
-              width={160}
-              height={60}
-              priority
-              className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 hover:scale-[1.03]"
-            />
+            {activeNiche.logo && !cms?.useTextLogo ? (
+              <Image
+                src={activeNiche.logo}
+                alt={brand}
+                width={160}
+                height={60}
+                priority
+                unoptimized={activeNiche.logo.startsWith("data:") || activeNiche.logo.startsWith("http")}
+                className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 hover:scale-[1.03]"
+              />
+            ) : (
+              <div>
+                <div className="font-grotesk text-[16px] font-bold uppercase tracking-[0.16em] text-ink leading-none">
+                  {brand}
+                </div>
+                <div className="mt-1 font-ui text-[8px] uppercase tracking-[0.22em] text-muted">
+                  {brandSuffix}
+                </div>
+              </div>
+            )}
           </a>
 
-          <nav className="hidden lg:flex items-center gap-8 font-ui text-[10.5px] uppercase tracking-[0.16em] text-[#1F1626]/85 font-medium">
-            <a href="#packages" className="hover:text-[#451176] transition-colors">
+          <nav className="hidden lg:flex items-center gap-8 font-ui text-[10.5px] uppercase tracking-[0.16em] text-ink/85 font-medium">
+            <a href="#packages" className="hover:text-[var(--accent)] transition-colors">
               Pilihan Program
             </a>
-            <a href="#estimator" className="hover:text-[#451176] transition-colors">
-              Kalkulator Gizi &amp; Porsi
-            </a>
-            <a href="#anatomy" className="hover:text-[#451176] transition-colors">
+            {visibility.showCustomizer && (
+              <a href="#estimator" className="hover:text-[var(--accent)] transition-colors">
+                Kalkulator Gizi &amp; Porsi
+              </a>
+            )}
+            <a href="#anatomy" className="hover:text-[var(--accent)] transition-colors">
               Anatomi 5 Sekat
             </a>
-            <a href="#reviews" className="hover:text-[#451176] transition-colors">
-              Hasil &amp; Ulasan
-            </a>
-            <a href="#story" className="hover:text-[#451176] transition-colors">
-              Tentang Kami
-            </a>
-            <a href="#faqs" className="hover:text-[#451176] transition-colors">
-              FAQ
-            </a>
+            {visibility.showReviews && (
+              <a href="#reviews" className="hover:text-[var(--accent)] transition-colors">
+                Hasil &amp; Ulasan
+              </a>
+            )}
+            {visibility.showStory && (
+              <a href="#story" className="hover:text-[var(--accent)] transition-colors">
+                Tentang Kami
+              </a>
+            )}
+            {visibility.showFaq && (
+              <a href="#faq" className="hover:text-[var(--accent)] transition-colors">
+                FAQ
+              </a>
+            )}
           </nav>
 
           <div className="flex items-center gap-3">
@@ -284,7 +351,7 @@ export function CateringExperience() {
               href={consultationHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-2 rounded-full border border-[#451176]/30 bg-white px-4 py-2 font-ui text-[10px] font-semibold uppercase tracking-[0.14em] text-[#451176] hover:bg-[#451176] hover:text-white transition-all shadow-2xs"
+              className="hidden sm:inline-flex items-center gap-2 rounded-full border border-[var(--accent)]/30 bg-surface px-4 py-2 font-ui text-[10px] font-semibold uppercase tracking-[0.14em] text-accent hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)] transition-all shadow-2xs"
             >
               <span>Konsultasi Ahli Gizi ↗</span>
             </a>
@@ -292,10 +359,10 @@ export function CateringExperience() {
             <button
               type="button"
               onClick={openCart}
-              className="flex items-center gap-2.5 rounded-full border border-[#E9E3F0] bg-white px-4 py-2 font-ui text-[10.5px] font-medium uppercase tracking-[0.16em] text-[#1F1626] hover:border-[#451176] transition-colors shadow-sm"
+              className="flex items-center gap-2.5 rounded-full border border-line bg-surface px-4 py-2 font-ui text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink hover:border-[var(--accent)] transition-colors shadow-sm"
             >
               <span>Keranjang</span>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#451176] text-[9.5px] font-semibold text-white">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[9.5px] font-semibold text-[var(--accent-contrast)]">
                 {cartLineCount}
               </span>
             </button>
@@ -304,30 +371,30 @@ export function CateringExperience() {
       </header>
 
       {/* 2. HIGH-DENSITY 12-COLUMN BENTO GRID DASHBOARD HERO */}
-      <section id="top" className="relative border-b border-[#E9E3F0] bg-[#FAF9FC] px-6 pt-10 pb-16 sm:px-10 sm:pt-14 sm:pb-24 overflow-hidden">
+      <section id="top" className="relative border-b border-line bg-canvas px-6 pt-10 pb-16 sm:px-10 sm:pt-14 sm:pb-24 overflow-hidden">
         <div className="mx-auto max-w-[1440px]">
           {/* Top Swiss Clinical Headline Header */}
           <div className="max-w-[920px]">
-            <div className="inline-flex items-center gap-2 rounded-md bg-[#451176]/10 px-3 py-1 text-[9px] font-ui uppercase tracking-[0.24em] text-[#451176] font-bold">
-              <span className="h-2 w-2 rounded-full bg-[#451176] animate-pulse" />
-              CLINICAL NUTRITION · CERTIFIED DIETITIAN SUPERVISED · JAKARTA SELATAN
+            <div className="inline-flex items-center gap-2 rounded-md bg-surface border border-line px-3 py-1 text-[9px] font-ui uppercase tracking-[0.24em] text-accent font-bold">
+              <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+              {hero.kicker}
             </div>
-            <h1 className="mt-4 font-heading text-[clamp(2.6rem,5vw,4.4rem)] leading-[1.0] tracking-[-0.03em] text-[#1F1626]">
-              Makan enak, tubuh bugar &amp; ringan. <br />
-              <span className="text-[#451176] italic font-serif">Program Katering Sehat Terpersonalisasi.</span>
+            <h1 className="mt-4 font-heading text-[clamp(2.6rem,5vw,4.4rem)] leading-[1.0] tracking-[-0.03em] text-ink">
+              {hero.titleLead} <br />
+              <span className="text-accent italic font-serif">{hero.titleAccent}</span> {hero.titleTail}
             </h1>
-            <p className="mt-4 font-body text-[14.5px] leading-[1.8] text-[#6B5E75] max-w-[680px]">
-              Catering sehat berstandar nutrisi klinis yang diawasi langsung oleh Ahli Gizi (Dietitian). Kalori 400-500 kcal terukur, 100% tanpa MSG sintetis, minyak zaitun pilihan, dan menu beragam berganti setiap hari dari dapur Kebayoran Baru.
+            <p className="mt-4 font-body text-[14.5px] leading-[1.8] text-muted max-w-[680px]">
+              {hero.description}
             </p>
           </div>
 
           {/* 12-COLUMN MODULAR BENTO GRID */}
           <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-5">
             {/* Box 1 (Cols 1-7): Interactive Program Dashboard & Live Macro Tracker */}
-            <div className="lg:col-span-7 rounded-3xl border border-[#E9E3F0] bg-white p-6 sm:p-8 shadow-xl shadow-[#451176]/5 flex flex-col justify-between">
+            <div className="lg:col-span-7 rounded-3xl border border-line bg-surface p-6 sm:p-8 shadow-xl shadow-black/5 flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-[#E9E3F0]">
-                  <span className="font-ui text-[9px] uppercase tracking-[0.22em] text-[#6B5E75] font-semibold">
+                <div className="flex items-center justify-between pb-4 border-b border-line">
+                  <span className="font-ui text-[9px] uppercase tracking-[0.22em] text-muted font-semibold">
                     1. Pilih Target Program Kesehatan:
                   </span>
                   <span className="font-ui text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
@@ -345,14 +412,14 @@ export function CateringExperience() {
                       className={cn(
                         "rounded-xl p-2.5 text-left transition-all border text-[11px] font-ui flex flex-col justify-between",
                         heroProgramTab === idx
-                          ? "bg-[#451176] text-white border-[#451176] shadow-md font-semibold"
-                          : "bg-[#FAF9FC] text-[#1F1626] border-[#E9E3F0] hover:border-[#451176]/50"
+                          ? "bg-accent text-[var(--accent-contrast)] border-[var(--accent)] shadow-md font-semibold"
+                          : "bg-canvas text-ink border-line hover:border-[var(--accent)]/50"
                       )}
                     >
                       <span>{prog.name}</span>
                       <span className={cn(
                         "text-[9px] mt-1 block",
-                        heroProgramTab === idx ? "text-purple-200" : "text-[#6B5E75]"
+                        heroProgramTab === idx ? "opacity-85" : "text-muted"
                       )}>
                         {prog.calories}
                       </span>
@@ -361,32 +428,32 @@ export function CateringExperience() {
                 </div>
 
                 {/* Active Program Goal & Macro Breakdown */}
-                <div className="mt-6 rounded-2xl bg-[#FAF9FC] border border-[#E9E3F0] p-4 sm:p-5">
+                <div className="mt-6 rounded-2xl bg-canvas border border-line p-4 sm:p-5">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
-                      <span className="font-ui text-[8.5px] uppercase tracking-[0.18em] text-[#451176] font-bold block">
+                      <span className="font-ui text-[8.5px] uppercase tracking-[0.18em] text-accent font-bold block">
                         Fokus Nutrisi Klinis
                       </span>
-                      <span className="font-ui text-[13px] font-bold text-[#1F1626] block mt-0.5">
+                      <span className="font-ui text-[13px] font-bold text-ink block mt-0.5">
                         {HERO_PROGRAMS[heroProgramTab].goal}
                       </span>
                     </div>
-                    <span className="font-heading text-[18px] font-bold text-[#451176]">
+                    <span className="font-heading text-[18px] font-bold text-accent">
                       {HERO_PROGRAMS[heroProgramTab].calories}
                     </span>
                   </div>
 
                   {/* Multi-Color Macro Bar */}
                   <div className="mt-4">
-                    <div className="flex justify-between text-[9px] font-ui uppercase tracking-[0.14em] text-[#6B5E75] mb-1.5 font-medium">
+                    <div className="flex justify-between text-[9px] font-ui uppercase tracking-[0.14em] text-muted mb-1.5 font-medium">
                       <span>Protein: {HERO_PROGRAMS[heroProgramTab].protein}g</span>
                       <span>Karbo: {HERO_PROGRAMS[heroProgramTab].carbs}g</span>
                       <span>Lemak Sehat: {HERO_PROGRAMS[heroProgramTab].fats}g</span>
                     </div>
-                    <div className="h-3 w-full rounded-full bg-[#E9E3F0] overflow-hidden flex">
+                    <div className="h-3 w-full rounded-full bg-line overflow-hidden flex">
                       <div
                         style={{ width: `${HERO_PROGRAMS[heroProgramTab].protein}%` }}
-                        className="bg-[#451176] h-full"
+                        className="bg-accent h-full"
                         title="Protein"
                       />
                       <div
@@ -402,36 +469,30 @@ export function CateringExperience() {
                     </div>
                   </div>
 
-                  <p className="mt-3 text-[11px] leading-relaxed text-[#6B5E75] italic">
+                  <p className="mt-3 text-[11px] leading-relaxed text-muted italic">
                     Komposisi: {HERO_PROGRAMS[heroProgramTab].highlight}
                   </p>
                 </div>
 
                 {/* Verified Checklist */}
-                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[10.5px] font-ui text-[#1F1626]">
-                  <div className="flex items-center gap-2">
-                    <span className="text-emerald-600 font-bold">✓</span>
-                    <span>100% Tanpa MSG &amp; Kimia</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-emerald-600 font-bold">✓</span>
-                    <span>Minyak Zaitun Pilihan</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-emerald-600 font-bold">✓</span>
-                    <span>Dipantau Ahli Gizi Berizin</span>
-                  </div>
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[10.5px] font-ui text-ink">
+                  {hero.badges.slice(0, 3).map((b) => (
+                    <div key={b} className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span>{b}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-7 flex flex-wrap items-center gap-4 pt-5 border-t border-[#E9E3F0]">
+              <div className="mt-7 flex flex-wrap items-center gap-4 pt-5 border-t border-line">
                 <Magnetic>
                   <a
                     href="#packages"
-                    className="inline-flex items-center gap-3 rounded-full bg-[#451176] px-8 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-[#320a56] transition-all shadow-md shadow-[#451176]/25"
+                    className="inline-flex items-center gap-3 rounded-full bg-accent px-8 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-contrast)] hover:opacity-90 transition-all shadow-md"
                   >
-                    Pilih Program Katering
+                    {hero.primaryCta}
                     <svg viewBox="0 0 14 14" fill="none" className="h-3 w-3" aria-hidden="true">
                       <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -441,32 +502,33 @@ export function CateringExperience() {
                   href={consultationHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-[#E9E3F0] bg-[#FAF9FC] px-6 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.14em] text-[#1F1626] hover:border-[#451176] hover:text-[#451176] transition-colors shadow-2xs"
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-canvas px-6 py-3.5 font-ui text-[10.5px] font-semibold uppercase tracking-[0.14em] text-ink hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors shadow-2xs"
                 >
-                  Konsultasi Dietitian Gratis ↗
+                  {hero.secondaryCta} ↗
                 </a>
               </div>
             </div>
 
             {/* Box 2 (Cols 8-12): Flat-Lay Bento Anatomy Card with Hotspots */}
-            <div className="lg:col-span-5 rounded-3xl border border-[#E9E3F0] bg-white p-4 shadow-xl shadow-[#451176]/5 flex flex-col justify-between">
-              <div className="relative aspect-[4/3.8] rounded-2xl overflow-hidden border border-[#E9E3F0]">
+            <div className="lg:col-span-5 rounded-3xl border border-line bg-surface p-4 shadow-xl shadow-black/5 flex flex-col justify-between">
+              <div className="relative aspect-[4/3.8] rounded-2xl overflow-hidden border border-line">
                 <Image
-                  src="/images/catering/hero.jpg"
-                  alt="Flat-lay Anatomi Menu Sehat Bento Glow House"
+                  src={mainHeroImg.src}
+                  alt={mainHeroImg.alt}
                   fill
                   priority
+                  unoptimized={mainHeroImg.src.startsWith("data:") || mainHeroImg.src.startsWith("http")}
                   sizes="(max-width: 1024px) 100vw, 540px"
                   className="object-cover transition-transform duration-700 hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
 
-                {/* Hotspot 1: Salmon */}
+                {/* Hotspot 1 */}
                 <div className="absolute top-4 left-4 z-10 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-white border border-white/20 font-ui text-[8.5px] font-medium">
                   ● Salmon Herbal (High Omega-3)
                 </div>
 
-                {/* Hotspot 2: Whole grain */}
+                {/* Hotspot 2 */}
                 <div className="absolute bottom-16 right-4 z-10 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-white border border-white/20 font-ui text-[8.5px] font-medium">
                   ● Beras Merah Organik (Low GI)
                 </div>
@@ -478,92 +540,71 @@ export function CateringExperience() {
                       Anatomi 5 Sekat
                     </span>
                     <span className="font-heading text-[18px] font-normal">
-                      Signature Healthy Bento
+                      {mainHeroImg.caption || "Signature Healthy Bento"}
                     </span>
                   </div>
                   <span className="rounded-full bg-emerald-600 px-3 py-1 font-ui text-[9px] font-bold text-white uppercase tracking-wider">
-                    Mulai 65k / pax
+                    Mulai {formatIDR(currentPkg.pricePerPax)} / pax
                   </span>
                 </div>
               </div>
 
               {/* Delivery Batch Status */}
-              <div className="mt-4 rounded-xl border border-[#E9E3F0] bg-[#FAF9FC] p-3 flex items-center justify-between">
+              <div className="mt-4 rounded-xl border border-line bg-canvas p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="font-ui text-[10px] text-[#1F1626] font-semibold">
-                    Slot Batch Besok Pagi: <span className="text-[#451176]">Sisa 4 Slot Dapur</span>
+                  <span className="font-ui text-[10px] text-ink font-semibold">
+                    Slot Batch Besok Pagi: <span className="text-accent">Sisa 4 Slot Dapur</span>
                   </span>
                 </div>
-                <span className="font-ui text-[9px] uppercase tracking-[0.16em] text-[#6B5E75]">
-                  Kebayoran Baru
+                <span className="font-ui text-[9px] uppercase tracking-[0.16em] text-muted">
+                  {brand}
                 </span>
               </div>
             </div>
 
             {/* Bottom Row - 3 Modular Stat Boxes */}
-            {/* Box 3 (Col 1-4): Calorie Precision */}
-            <div className="lg:col-span-4 rounded-2xl border border-[#E9E3F0] bg-white p-5 shadow-sm">
-              <div className="font-heading text-[26px] font-bold text-[#451176]">
-                400 - 500 kcal
+            {hero.stats.slice(0, 3).map((stat, idx) => (
+              <div key={idx} className="lg:col-span-4 rounded-2xl border border-line bg-surface p-5 shadow-sm">
+                <div className={cn("font-heading text-[26px] font-bold", idx === 0 ? "text-accent" : idx === 1 ? "text-emerald-700" : "text-ink")}>
+                  {stat.value}
+                </div>
+                <div className="font-ui text-[10px] uppercase tracking-[0.18em] text-ink font-bold mt-1">
+                  {stat.label}
+                </div>
+                <p className="mt-2 font-body text-[12px] leading-relaxed text-muted">
+                  {idx === 0
+                    ? "Dihitung cermat per box oleh Ahli Gizi. Kenyang tahan lama tanpa rasa lemas atau kantuk berat saat jam kerja."
+                    : idx === 1
+                    ? "Dikirim hangat se-Jabodetabek dengan kemasan microwave-safe steril dan higienis."
+                    : "Bebas konsultasikan pantangan kolesterol, asam urat, alergi, atau target penurunan BB sebelum memulai paket."}
+                </p>
               </div>
-              <div className="font-ui text-[10px] uppercase tracking-[0.18em] text-[#1F1626] font-bold mt-1">
-                Kalori Terukur Presisi
-              </div>
-              <p className="mt-2 font-body text-[12px] leading-relaxed text-[#6B5E75]">
-                Dihitung cermat per box oleh Ahli Gizi. Kenyang tahan lama tanpa rasa lemas atau kantuk berat saat jam kerja.
-              </p>
-            </div>
-
-            {/* Box 4 (Col 5-8): Logistics & Insulated Cool Box */}
-            <div className="lg:col-span-4 rounded-2xl border border-[#E9E3F0] bg-white p-5 shadow-sm">
-              <div className="font-heading text-[26px] font-bold text-emerald-700">
-                2x Kirim / Hari
-              </div>
-              <div className="font-ui text-[10px] uppercase tracking-[0.18em] text-[#1F1626] font-bold mt-1">
-                Makan Siang &amp; Makan Malam
-              </div>
-              <p className="mt-2 font-body text-[12px] leading-relaxed text-[#6B5E75]">
-                Dikirim hangat se-Jabodetabek (Makan Siang jam 10:30 &amp; Malam jam 16:30) dengan kemasan microwave-safe steril.
-              </p>
-            </div>
-
-            {/* Box 5 (Col 9-12): Dietitian Standby */}
-            <div className="lg:col-span-4 rounded-2xl border border-[#E9E3F0] bg-white p-5 shadow-sm">
-              <div className="font-heading text-[26px] font-bold text-[#1F1626]">
-                Free Dietitian
-              </div>
-              <div className="font-ui text-[10px] uppercase tracking-[0.18em] text-[#1F1626] font-bold mt-1">
-                Konsultasi Ahli Gizi 1-on-1
-              </div>
-              <p className="mt-2 font-body text-[12px] leading-relaxed text-[#6B5E75]">
-                Bebas konsultasikan pantangan kolesterol, asam urat, alergi, atau target penurunan BB sebelum memulai paket.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* 3. SIGNATURE PROGRAM SHOWCASE CARDS */}
-      <section id="packages" className="border-b border-[#E9E3F0] px-6 py-16 sm:px-10 sm:py-24 bg-white">
+      <section id="packages" className="border-b border-line px-6 py-16 sm:px-10 sm:py-24 bg-surface">
         <div className="mx-auto max-w-[1440px]">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E9E3F0] pb-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-line pb-6">
             <div>
-              <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-[#451176] font-bold">
-                Program Pilihan
+              <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-accent font-bold">
+                {activeNiche.showcase.kicker}
               </span>
-              <h2 className="mt-2 font-heading text-[clamp(2.2rem,4.2vw,3.6rem)] leading-[1.02] text-[#1F1626]">
-                Pilihan Program Sehat Sesuai Goal Anda.
+              <h2 className="mt-2 font-heading text-[clamp(2.2rem,4.2vw,3.6rem)] leading-[1.02] text-ink">
+                {activeNiche.showcase.title}
               </h2>
             </div>
-            <p className="max-w-[420px] font-body text-[13px] leading-[1.8] text-[#6B5E75]">
-              Setiap menu diracik dari bahan utuh segar, tinggi nutrisi, dan dimasak fresh setiap pagi dari dapur Kebayoran Baru.
+            <p className="max-w-[420px] font-body text-[13px] leading-[1.8] text-muted">
+              {activeNiche.showcase.description}
             </p>
           </div>
 
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PACKAGES.map((pkg, idx) => {
-              const isSelected = selectedPkgIndex === idx;
+            {dynamicPackages.map((pkg, idx) => {
+              const isSelected = safeIndex === idx;
               return (
                 <div
                   key={pkg.id}
@@ -571,19 +612,20 @@ export function CateringExperience() {
                   className={cn(
                     "cursor-pointer rounded-2xl border transition-all duration-300 p-5 flex flex-col justify-between group",
                     isSelected
-                      ? "border-[#451176] bg-[#FAF9FC] shadow-xl ring-2 ring-[#451176] -translate-y-1"
-                      : "border-[#E9E3F0] bg-white hover:border-[#451176]/40 hover:shadow-lg hover:-translate-y-0.5"
+                      ? "border-[var(--accent)] bg-canvas shadow-xl ring-2 ring-[var(--accent)] -translate-y-1"
+                      : "border-line bg-surface hover:border-[var(--accent)]/40 hover:shadow-lg hover:-translate-y-0.5"
                   )}
                 >
                   <div>
-                    <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[#E9E3F0] mb-4">
+                    <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-line mb-4">
                       <Image
                         src={pkg.image}
                         alt={pkg.name}
                         fill
+                        unoptimized={pkg.image.startsWith("data:") || pkg.image.startsWith("http")}
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute top-2.5 right-2.5 rounded-full bg-[#451176] text-white px-2.5 py-0.5 font-ui text-[8.5px] font-semibold uppercase tracking-[0.14em] shadow-sm">
+                      <div className="absolute top-2.5 right-2.5 rounded-full bg-accent text-[var(--accent-contrast)] px-2.5 py-0.5 font-ui text-[8.5px] font-semibold uppercase tracking-[0.14em] shadow-sm">
                         {pkg.code}
                       </div>
                       <div className="absolute bottom-2.5 left-2.5 rounded-full bg-black/50 backdrop-blur-md text-white px-2.5 py-0.5 font-ui text-[8px] font-semibold uppercase tracking-[0.12em]">
@@ -592,38 +634,38 @@ export function CateringExperience() {
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-[#451176] font-bold block">
+                      <span className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-accent font-bold block">
                         {pkg.calories}
                       </span>
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     </div>
 
-                    <h3 className="mt-1 font-heading text-[18px] text-[#1F1626] font-semibold leading-snug">
+                    <h3 className="mt-1 font-heading text-[18px] text-ink font-semibold leading-snug">
                       {pkg.name}
                     </h3>
-                    <p className="mt-1.5 font-body text-[11.5px] text-[#6B5E75] line-clamp-2 leading-relaxed">
+                    <p className="mt-1.5 font-body text-[11.5px] text-muted line-clamp-2 leading-relaxed">
                       {pkg.description}
                     </p>
 
                     {/* Micro Highlights Pill */}
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {pkg.highlights.slice(0, 2).map((h) => (
-                        <span key={h} className="rounded-md bg-[#FAF9FC] border border-[#E9E3F0] px-2 py-0.5 text-[9px] font-ui text-[#1F1626] font-medium">
+                        <span key={h} className="rounded-md bg-canvas border border-line px-2 py-0.5 text-[9px] font-ui text-ink font-medium">
                           ✓ {h}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-[#E9E3F0] flex items-baseline justify-between">
+                  <div className="mt-6 pt-4 border-t border-line flex items-baseline justify-between">
                     <div>
-                      <span className="font-ui text-[8.5px] uppercase tracking-[0.14em] text-[#6B5E75] block">
+                      <span className="font-ui text-[8.5px] uppercase tracking-[0.14em] text-muted block">
                         Harga Mulai
                       </span>
-                      <span className="font-heading text-[20px] font-semibold text-[#1F1626]">
+                      <span className="font-heading text-[20px] font-semibold text-ink">
                         {formatIDR(pkg.pricePerPax)}
                       </span>
-                      <span className="font-ui text-[10px] text-[#6B5E75]"> / pax</span>
+                      <span className="font-ui text-[10px] text-muted"> / pax</span>
                     </div>
                     <button
                       type="button"
@@ -635,8 +677,8 @@ export function CateringExperience() {
                       className={cn(
                         "rounded-full px-4 py-2 font-ui text-[9.5px] font-semibold uppercase tracking-[0.14em] transition-all",
                         isSelected
-                          ? "bg-[#451176] text-white shadow-md shadow-[#451176]/20"
-                          : "border border-[#E9E3F0] bg-white text-[#1F1626] hover:bg-[#451176] hover:text-white"
+                          ? "bg-accent text-[var(--accent-contrast)] shadow-md"
+                          : "border border-line bg-surface text-ink hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
                       )}
                     >
                       Pilih
@@ -650,7 +692,8 @@ export function CateringExperience() {
       </section>
 
       {/* 4. INTERACTIVE CALORIE & MEAL ESTIMATOR */}
-      <section id="estimator" className="border-b border-[#E9E3F0] px-6 py-16 sm:px-10 sm:py-24 bg-[#FAF9FC]">
+      {visibility.showCustomizer && (
+      <section id="estimator" className="border-b border-line px-6 py-16 sm:px-10 sm:py-24 bg-canvas">
         <div className="mx-auto max-w-[1440px]">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             {/* Left Controls Column */}
@@ -828,7 +871,7 @@ export function CateringExperience() {
                   href={consultationHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full rounded-full bg-[#451176] py-3.5 font-ui text-[11px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-[#320a56] transition-colors shadow-md flex items-center justify-center gap-2 text-center"
+                  className="w-full rounded-full bg-accent py-3.5 font-ui text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--accent-contrast)] hover:opacity-90 transition-opacity shadow-md flex items-center justify-center gap-2 text-center"
                 >
                   <span>Konsultasi &amp; Order via WhatsApp</span>
                   <span>↗</span>
@@ -836,19 +879,20 @@ export function CateringExperience() {
                 <button
                   type="button"
                   onClick={handleAddCustomBanquet}
-                  className="w-full rounded-full border border-[#E9E3F0] py-3 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#1F1626] hover:border-[#451176] transition-colors text-center"
+                  className="w-full rounded-full border border-line py-3 font-ui text-[10.5px] font-semibold uppercase tracking-[0.16em] text-ink hover:border-[var(--accent)] transition-colors text-center"
                 >
                   Tambahkan ke Keranjang Web
                 </button>
               </div>
 
-              <p className="mt-3 text-center font-body text-[10.5px] text-[#6B5E75]">
-                Dapur Kebayoran Baru · Bisa terbitkan faktur pajak korporat
+              <p className="mt-3 text-center font-body text-[10.5px] text-muted">
+                {footer.address} · Bisa terbitkan faktur pajak korporat
               </p>
             </div>
           </div>
         </div>
       </section>
+      )}
 
       {/* 5. INTERACTIVE FEATURE: ANATOMI 5 SEKAT (SETIAP DETAIL ADA ALASANNYA) */}
       <section id="anatomy" className="border-b border-[#E9E3F0] px-6 py-16 sm:px-10 sm:py-24 bg-white">
@@ -1019,178 +1063,189 @@ export function CateringExperience() {
       </section>
 
       {/* 6. BRAND STORY & NUTRITIONIST CONSULTATION CALLOUT */}
-      <section id="story" className="border-b border-[#E9E3F0] px-6 py-16 sm:px-10 sm:py-24 bg-[#FAF9FC]">
-        <div className="mx-auto max-w-[1440px] grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-6 relative">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-[#E9E3F0]">
-                <Image
-                  src="/images/catering/hero.jpg"
-                  alt="Glow House healthy meal"
-                  fill
-                  sizes="350px"
-                  className="object-cover"
-                />
+      {visibility.showStory && (
+        <section id="story" className="border-b border-line px-6 py-16 sm:px-10 sm:py-24 bg-canvas">
+          <div className="mx-auto max-w-[1440px] grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-6 relative">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-line">
+                  <Image
+                    src={story.images[0]?.src || "/images/catering/hero.jpg"}
+                    alt={story.images[0]?.alt || `${brand} healthy meal`}
+                    fill
+                    unoptimized={(story.images[0]?.src || "").startsWith("data:") || (story.images[0]?.src || "").startsWith("http")}
+                    sizes="350px"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-line translate-y-6">
+                  <Image
+                    src={story.images[1]?.src || "/images/catering/nutritionist.jpg"}
+                    alt={story.images[1]?.alt || `Tim ${brand}`}
+                    fill
+                    unoptimized={(story.images[1]?.src || "").startsWith("data:") || (story.images[1]?.src || "").startsWith("http")}
+                    sizes="350px"
+                    className="object-cover"
+                  />
+                </div>
               </div>
-              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-[#E9E3F0] translate-y-6">
-                <Image
-                  src="/images/catering/nutritionist.jpg"
-                  alt="Ahli Gizi Glow House"
-                  fill
-                  sizes="350px"
-                  className="object-cover"
-                />
+            </div>
+
+            <div className="lg:col-span-6 lg:pl-6">
+              <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-accent font-bold">
+                {story.kicker}
+              </span>
+              <h2 className="mt-3 font-heading text-[clamp(2.2rem,4.2vw,3.6rem)] leading-[1.04] text-ink">
+                {story.title}
+              </h2>
+              <div className="mt-6 space-y-4 font-body text-[13.5px] leading-[1.85] text-muted">
+                {story.paragraphs.map((p, idx) => (
+                  <p key={idx}>{p}</p>
+                ))}
+              </div>
+              {story.quote && (
+                <blockquote className="mt-5 border-l-2 border-[var(--accent)] pl-4 font-heading italic text-[15px] text-ink/90">
+                  &ldquo;{story.quote}&rdquo;
+                </blockquote>
+              )}
+
+              <div className="mt-8 border-t border-line pt-6 flex items-center justify-between">
+                <div>
+                  <div className="font-heading italic text-[16px] text-ink">
+                    {story.quoteAttribution || `${brand} Team`}
+                  </div>
+                  <div className="font-ui text-[8.5px] uppercase tracking-[0.18em] text-muted">
+                    {brandSuffix}
+                  </div>
+                </div>
+                {activeNiche.logo && !cms?.useTextLogo ? (
+                  <Image
+                    src={activeNiche.logo}
+                    alt={brand}
+                    width={120}
+                    height={45}
+                    className="h-8 w-auto object-contain opacity-85"
+                  />
+                ) : (
+                  <span className="font-grotesk text-[13px] font-bold uppercase tracking-[0.16em] text-ink/75">{brand}</span>
+                )}
               </div>
             </div>
           </div>
-
-          <div className="lg:col-span-6 lg:pl-6">
-            <span className="font-ui text-[9px] uppercase tracking-[0.3em] text-[#451176] font-bold">
-              Tentang Glow House
-            </span>
-            <h2 className="mt-3 font-heading text-[clamp(2.2rem,4.2vw,3.6rem)] leading-[1.04] text-[#1F1626]">
-              Good food is personal: <br />
-              <span className="italic font-light text-[#451176]">Nutrisi tepat, rasa memikat.</span>
-            </h2>
-            <div className="mt-6 space-y-4 font-body text-[13.5px] leading-[1.85] text-[#6B5E75]">
-              <p>
-                Bagi kami di Glow House, pola makan sehat bukanlah tentang rasa bersalah atau membatasi diri hingga lemas. Kami percaya tubuh berhak mendapatkan makanan bergizi utuh yang diracik lezat dan mudah dinikmati setiap hari.
-              </p>
-              <p>
-                Dipandu oleh ahli gizi berpengalaman di dapur Kebayoran Baru, Jakarta Selatan, setiap menu kami formulasikan untuk mendukung target kesehatan Anda—mulai dari penurunan berat badan berkelanjutan, kestabilan gula darah, hingga vitalitas kerja harian.
-              </p>
-            </div>
-
-            <div className="mt-8 border-t border-[#E9E3F0] pt-6 flex items-center justify-between">
-              <div>
-                <div className="font-heading italic text-[16px] text-[#1F1626]">
-                  Glow House Nutrition Team
-                </div>
-                <div className="font-ui text-[8.5px] uppercase tracking-[0.18em] text-[#6B5E75]">
-                  Personalized Meal Program
-                </div>
-              </div>
-              <Image
-                src="/images/catering/logo.png"
-                alt="Glow House"
-                width={120}
-                height={45}
-                className="h-8 w-auto object-contain opacity-85"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 7. AUTHENTIC SOCIAL PROOF & CLINICAL RESULTS */}
-      <section id="reviews" className="border-t border-[#E9E3F0] bg-white px-6 py-16 sm:px-10 sm:py-24">
-        <div className="mx-auto max-w-[1440px]">
-          {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#E9E3F0] pb-8">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-md bg-[#451176]/10 px-3.5 py-1 font-ui text-[9px] uppercase tracking-[0.24em] font-bold text-[#451176]">
-                <span>⭐ 4.95 / 5.0</span>
-                <span className="h-1 w-1 rounded-full bg-[#451176]" />
-                <span>35.000+ Meal Box Berstandar Gizi</span>
+      {visibility.showReviews && (
+        <section id="reviews" className="border-t border-line bg-surface px-6 py-16 sm:px-10 sm:py-24">
+          <div className="mx-auto max-w-[1440px]">
+            {/* Section Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-line pb-8">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-md bg-canvas border border-line px-3.5 py-1 font-ui text-[9px] uppercase tracking-[0.24em] font-bold text-accent">
+                  <span>⭐ 4.95 / 5.0</span>
+                  <span className="h-1 w-1 rounded-full bg-accent" />
+                  <span>35.000+ Meal Box Berstandar Gizi</span>
+                </div>
+                <h2 className="mt-3 font-heading text-[clamp(2.2rem,4vw,3.6rem)] leading-[1.04] text-ink">
+                  Hasil Nyata &amp; Transformasi Sehat <br />
+                  <span className="italic font-serif text-accent">Klien Setia {brand}.</span>
+                </h2>
               </div>
-              <h2 className="mt-3 font-heading text-[clamp(2.2rem,4vw,3.6rem)] leading-[1.04] text-[#1F1626]">
-                Hasil Nyata &amp; Transformasi Sehat <br />
-                <span className="italic font-serif text-[#451176]">Klien Setia Glow House.</span>
-              </h2>
+
+              {/* Quick Proof Pills */}
+              <div className="flex items-center gap-6">
+                <div className="text-right">
+                  <div className="font-heading text-[24px] font-bold text-accent">98.4%</div>
+                  <div className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-muted">
+                    Target BB Tercapai
+                  </div>
+                </div>
+                <div className="h-8 w-px bg-[var(--border)]" />
+                <div className="text-right">
+                  <div className="font-heading text-[24px] font-bold text-emerald-600">100%</div>
+                  <div className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-muted">
+                    Supervisi Dietitian
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Quick Proof Pills */}
-            <div className="flex items-center gap-6">
-              <div className="text-right">
-                <div className="font-heading text-[24px] font-bold text-[#451176]">98.4%</div>
-                <div className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-[#6B5E75]">
-                  Target BB Tercapai
+            {/* Filter Tabs */}
+            <div className="mt-8 flex flex-wrap gap-2">
+              {[
+                { id: "all", label: `Semua Hasil (${reviews.length})` },
+                { id: "slim", label: "🥗 Weight Loss (Slim)" },
+                { id: "diabetes", label: "🩸 Diabetes & Heart Care" },
+                { id: "corporate", label: "🍱 Corporate & Executive" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveCateringFilter(tab.id)}
+                  className={cn(
+                    "rounded-full px-4 py-1.5 font-ui text-[11px] font-medium transition-all",
+                    activeCateringFilter === tab.id
+                      ? "bg-accent text-[var(--accent-contrast)] shadow-xs font-semibold"
+                      : "bg-canvas border border-line text-muted hover:text-ink hover:border-[var(--accent)]"
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Review Cards Grid */}
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {reviews.filter(
+                (r) => activeCateringFilter === "all" || r.category === activeCateringFilter
+              ).map((rev) => (
+                <div
+                  key={rev.id}
+                  className="rounded-2xl border border-line bg-canvas p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:border-[var(--accent)]/50"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex text-amber-500 text-xs tracking-wider">
+                        {"★".repeat(rev.stars)}
+                      </div>
+                      <span className="font-ui text-[8px] text-muted uppercase tracking-wider">
+                        {rev.date}
+                      </span>
+                    </div>
+
+                    <p className="mt-3 font-body text-[12.5px] leading-relaxed text-ink/90 italic">
+                      &ldquo;{rev.review}&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="mt-5 pt-4 border-t border-line">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-surface border border-line font-ui text-[10px] font-bold text-accent">
+                        {rev.avatar}
+                      </div>
+                      <div>
+                        <div className="font-ui text-[11px] font-bold text-ink">
+                          {rev.name}
+                        </div>
+                        <div className="font-ui text-[9px] text-muted">
+                          {rev.location}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-2 font-ui text-[8.5px] text-accent font-semibold bg-surface px-2.5 py-1 rounded-md border border-line inline-block shadow-2xs">
+                      {rev.tag}
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="h-8 w-px bg-[#E9E3F0]" />
-              <div className="text-right">
-                <div className="font-heading text-[24px] font-bold text-emerald-600">100%</div>
-                <div className="font-ui text-[8.5px] uppercase tracking-[0.16em] text-[#6B5E75]">
-                  Supervisi Dietitian
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-
-          {/* Filter Tabs */}
-          <div className="mt-8 flex flex-wrap gap-2">
-            {[
-              { id: "all", label: "Semua Hasil (4)" },
-              { id: "slim", label: "🥗 Weight Loss (Slim)" },
-              { id: "diabetes", label: "🩸 Diabetes & Heart Care" },
-              { id: "corporate", label: "🍱 Corporate & Executive" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveCateringFilter(tab.id)}
-                className={cn(
-                  "rounded-full px-4 py-1.5 font-ui text-[11px] font-medium transition-all",
-                  activeCateringFilter === tab.id
-                    ? "bg-[#451176] text-white shadow-xs font-semibold"
-                    : "bg-[#FAF9FC] border border-[#E9E3F0] text-[#6B5E75] hover:text-[#1F1626] hover:border-[#451176]"
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Review Cards Grid */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {GLOW_REVIEWS.filter(
-              (r) => activeCateringFilter === "all" || r.category === activeCateringFilter
-            ).map((rev) => (
-              <div
-                key={rev.id}
-                className="rounded-2xl border border-[#E9E3F0] bg-[#FAF9FC] p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-[#451176]/10 hover:border-[#451176]/50"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex text-amber-500 text-xs tracking-wider">
-                      {"★".repeat(rev.stars)}
-                    </div>
-                    <span className="font-ui text-[8px] text-[#6B5E75] uppercase tracking-wider">
-                      {rev.date}
-                    </span>
-                  </div>
-
-                  <p className="mt-3 font-body text-[12.5px] leading-relaxed text-[#1F1626]/90 italic">
-                    &ldquo;{rev.review}&rdquo;
-                  </p>
-                </div>
-
-                <div className="mt-5 pt-4 border-t border-[#E9E3F0]">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#451176]/15 font-ui text-[10px] font-bold text-[#451176]">
-                      {rev.avatar}
-                    </div>
-                    <div>
-                      <div className="font-ui text-[11px] font-bold text-[#1F1626]">
-                        {rev.name}
-                      </div>
-                      <div className="font-ui text-[9px] text-[#6B5E75]">
-                        {rev.location}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-2 font-ui text-[8.5px] text-[#451176] font-semibold bg-white px-2.5 py-1 rounded-md border border-[#E9E3F0] inline-block shadow-2xs">
-                    {rev.tag}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 8. FAQ ACCORDION */}
-      <FaqAccordion />
+      {visibility.showFaq && <FaqAccordion />}
 
       {/* 9. SITE FOOTER */}
       <SiteFooter />

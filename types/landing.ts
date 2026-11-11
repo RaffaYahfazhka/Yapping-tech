@@ -141,6 +141,35 @@ export interface NicheFormConfig {
   extraNote: string;
 }
 
+export interface CmsSectionVisibility {
+  showAnnouncement: boolean;
+  showCustomizer: boolean;
+  showStory: boolean;
+  showReviews: boolean;
+  showFaq: boolean;
+}
+
+export interface CmsReviewItem {
+  id: string;
+  category: string;
+  name: string;
+  location: string;
+  avatar: string;
+  stars: number;
+  tag: string;
+  date: string;
+  review: string;
+}
+
+export interface CmsSettings {
+  enabled: boolean;
+  useTextLogo: boolean;
+  whatsappOrderNumber: string;
+  visibility: CmsSectionVisibility;
+  reviews?: CmsReviewItem[];
+  updatedAt?: string;
+}
+
 export interface NicheConfig {
   id: NicheId;
   brand: string;
@@ -160,6 +189,7 @@ export interface NicheConfig {
   cta: CtaConfig;
   footer: FooterConfig;
   form: NicheFormConfig;
+  cms?: CmsSettings;
 }
 
 export interface CartItem {
