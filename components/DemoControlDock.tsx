@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { WHATSAPP_NUMBER } from "@/config/niches";
 import { useShowcase } from "@/context/ShowcaseContext";
-import { YappingLogo } from "@/components/YappingLogo";
+import { KomoseLogo } from "@/components/komose/KomoseLogo";
 
 export function DemoControlDock() {
   const { niches, activeId, activeNiche, setActiveNiche, basePath, isEmbedded } =
@@ -25,7 +26,7 @@ export function DemoControlDock() {
   }
 
   const pitch = encodeURIComponent(
-    `Halo Yapping Techflow, saya sedang melihat template ${activeNiche.brand} (${activeNiche.dock.label}) di website Anda. Saya tertarik membuat landing page seperti ini untuk bisnis saya. Boleh info detail paket Tanpa CMS & Dengan CMS?`,
+    `Halo Komose, saya sedang melihat template toko ${activeNiche.brand} (${activeNiche.dock.label}). Saya tertarik membuat website toko seperti ini untuk bisnis saya. Boleh info paket Tanpa CMS & Dengan CMS?`,
   );
 
   const handleTabClick = (nicheId: typeof activeId) => {
@@ -36,35 +37,35 @@ export function DemoControlDock() {
   };
 
   return (
-    <div className="fixed bottom-5 inset-x-0 z-50 flex justify-center px-3 sm:px-6 pointer-events-none">
+    <div className="fixed bottom-5 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
       <aside
         aria-label="Demo Template Switcher"
-        className="pointer-events-auto flex h-[54px] w-full max-w-4xl items-center justify-between rounded-full border border-stone-200/90 bg-white/95 px-3 shadow-[0_12px_36px_rgba(0,0,0,0.12)] backdrop-blur-xl sm:px-5 transition-all"
+        className="pointer-events-auto inline-flex h-14 max-w-[95vw] items-center gap-2 sm:gap-3 rounded-full border border-stone-200/90 bg-white/95 p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.1)] backdrop-blur-xl transition-all"
       >
-        {/* Left: Agency Brand + Back to Home Button */}
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        {/* Left: Back to Komose + Logo */}
+        <div className="flex shrink-0 items-center gap-2 pl-1">
           <Link
-            href="/"
-            title="Kembali ke Beranda Yapping Techflow"
-            className="group flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1.5 text-[11px] font-bold text-stone-700 transition-all hover:bg-stone-900 hover:text-white sm:px-3"
+            href="/komose"
+            title="Kembali ke Platform Komose"
+            className="group flex items-center gap-1.5 rounded-full border border-stone-200/90 bg-stone-50 px-3 py-1.5 text-xs font-semibold text-stone-700 transition-all hover:bg-[#1B4328] hover:text-white"
           >
-            <span className="text-sm transition-transform group-hover:-translate-x-0.5">←</span>
-            <span className="hidden sm:inline">Home</span>
+            <span className="text-xs transition-transform group-hover:-translate-x-0.5">←</span>
+            <span className="hidden sm:inline">Komose</span>
           </Link>
 
           <Link
-            href="/"
-            className="group hidden md:flex shrink-0 items-center transition-opacity hover:opacity-85"
+            href="/komose"
+            className="group hidden xl:flex shrink-0 items-center transition-opacity hover:opacity-85 pr-1"
           >
-            <YappingLogo className="scale-85 origin-left" />
+            <KomoseLogo size="sm" />
           </Link>
         </div>
 
-        {/* Center: Niche Switcher Tabs (Active tab has White pill background with soft shadow) */}
+        {/* Center: Niche Switcher Tabs */}
         <div
           role="tablist"
           aria-label="Pilih template industri"
-          className="flex items-center gap-1 rounded-full bg-stone-100/90 p-1"
+          className="flex items-center gap-1 rounded-full bg-stone-100/90 p-1 text-xs font-semibold text-stone-600"
         >
           {niches.map((niche) => {
             const isActive = niche.id === activeId;
@@ -76,11 +77,11 @@ export function DemoControlDock() {
                 aria-selected={isActive}
                 aria-label={niche.dock.label}
                 onClick={() => handleTabClick(niche.id)}
-                className={`relative flex items-center justify-center rounded-full px-2.5 py-1.5 text-[11px] sm:px-4 sm:text-xs font-semibold transition-all duration-200 ${
-                  isActive ? "text-stone-950 font-bold" : "text-stone-500 hover:text-stone-900"
+                className={`relative flex items-center justify-center rounded-full px-3 py-1.5 text-xs transition-colors ${
+                  isActive ? "text-stone-950 font-bold" : "text-stone-600 hover:text-stone-900"
                 }`}
               >
-                {/* Active Tab Background: White pill with soft shadow (sesuai lampiran gambar) */}
+                {/* Active Tab Background: White pill with soft shadow */}
                 {isActive && (
                   <motion.span
                     layoutId="activeDockTab"
@@ -94,7 +95,18 @@ export function DemoControlDock() {
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-1.5 whitespace-nowrap">
-                  <span className="text-sm leading-none">{niche.dock.emoji}</span>
+                  {niche.dock.emojiImage ? (
+                    <Image
+                      src={niche.dock.emojiImage}
+                      alt={niche.dock.label}
+                      width={18}
+                      height={18}
+                      className="h-4 w-4 object-contain"
+                      unoptimized
+                    />
+                  ) : (
+                    <span className="text-xs leading-none">{niche.dock.emoji}</span>
+                  )}
                   <span className="hidden sm:inline">{niche.dock.label}</span>
                   <span className="sm:hidden">{niche.dock.shortLabel}</span>
                 </span>
@@ -103,12 +115,12 @@ export function DemoControlDock() {
           })}
         </div>
 
-        {/* Right: CMS Demo Switcher + Direct WhatsApp CTA */}
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+        {/* Right: Buka CMS & Pesan Web Ini */}
+        <div className="flex shrink-0 items-center gap-1.5 pr-1">
           <Link
             href={`/cms/${activeId}`}
-            title={`Buka ${activeNiche.brand} Management System (CMS + Live Preview)`}
-            className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[11px] font-bold text-emerald-800 transition-all hover:bg-emerald-600 hover:text-white hover:border-emerald-600 sm:px-3.5"
+            title={`Buka ${activeNiche.brand} Management System`}
+            className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 transition-all hover:bg-emerald-600 hover:text-white hover:border-emerald-600"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="hidden md:inline">Buka CMS</span>
@@ -119,13 +131,12 @@ export function DemoControlDock() {
             href={`https://wa.me/${WHATSAPP_NUMBER}?text=${pitch}`}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Chat Yapping Techflow untuk buat website serupa"
-            className="group flex items-center gap-1.5 rounded-full bg-stone-950 px-3 py-1.5 text-[11px] font-semibold text-white transition-all hover:bg-stone-800 sm:px-4 sm:py-2 sm:text-xs shadow-sm"
+            aria-label="Pesan website ini via WhatsApp"
+            className="group flex items-center gap-1 rounded-full bg-stone-950 px-3.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-stone-800 shadow-sm"
           >
             <span className="hidden md:inline">Pesan Web Ini</span>
-            <span className="hidden sm:inline md:hidden">Order</span>
-            <span className="sm:hidden">Order</span>
-            <span className="text-emerald-400 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+            <span className="md:hidden">Pesan</span>
+            <span className="text-emerald-400 text-xs transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
               ↗
             </span>
           </a>

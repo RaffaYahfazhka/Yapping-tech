@@ -5,28 +5,28 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const FAQS = [
   {
-    q: "Apakah saya bisa menggunakan domain milik saya sendiri?",
-    a: "Ya, tentu. Semua proyek yang kami bangun mendukung custom domain mandiri. Klien cukup mengarahkan DNS domain mereka ke server kami, dan website mereka langsung bisa diakses di URL bersih seperti tokokue.com tanpa embel-embel apapun. Kami juga membantu proses setup DNS dari awal hingga selesai.",
+    q: "Apa peran utama Yapping Techflow sebagai studio teknologi?",
+    a: "Yapping Techflow beroperasi sebagai holding teknologi dan venture builder studio. Kami tidak beroperasi seperti software house konvensional yang sekadar 'mengerjakan pesanan lalu lepas tangan'. Fokus utama kami adalah menginkubasi produk digital in-house kami sendiri (seperti Plivin.co), menaungi lini komersial klien (Komose), serta menjadi partner teknologi strategis untuk platform berskala besar.",
   },
   {
-    q: "Berapa lama proses pembuatan hingga website bisa live?",
-    a: "Rata-rata 7–14 hari kerja tergantung kompleksitas fitur. Klien yang memilih paket template siap pakai (Atelier Suite) bisa live dalam 3–5 hari kerja. Proyek kustom seperti platform On-Demand atau SaaS biasanya membutuhkan sprint 2–4 minggu dengan milestone yang terukur dan transparan.",
+    q: "Bagaimana pembagian peran antara Yapping Techflow, Plivin.co, dan Komose?",
+    a: "Yapping Techflow adalah induk ekosistem teknologi. Plivin.co adalah venture startup in-house kami yang bergerak di industri digital gifting & hampers, dan segera berekspansi ke ekosistem undangan pernikahan digital. Sementara itu, Komose adalah brand komersial kami yang khusus melayani pembuatan website interaktif, sistem kelola toko (CMS), dan solusi digital klien seperti ClickCare.id.",
   },
   {
-    q: "Apakah saya bisa ganti foto produk dan harga secara mandiri?",
-    a: "Ya. Setiap proyek yang kami serahkan dilengkapi dengan panduan pengelolaan konten yang praktis. Untuk klien yang membutuhkan kemudahan lebih, kami bisa mengintegrasikan CMS (Content Management System) sederhana sehingga klien bisa update produk, harga, dan gambar sendiri tanpa perlu menyentuh kode.",
+    q: "Jika saya adalah pemilik bisnis yang ingin membuat website jualan atau katalog toko, harus ke mana?",
+    a: "Untuk kebutuhan website bisnis, UMKM, toko ritel, klinik, maupun jasa profesional dengan alur pesanan rapi ke WhatsApp dan sistem CMS mandiri, Anda dapat langsung mengunjungi platform komersial kami di Komose (akses via komose.id atau menu Komose ↗ di navbar). Di sana tersedia pilihan paket terima beres maupun paket mandiri dengan pengerjaan cepat 3–5 hari.",
   },
   {
-    q: "Bagaimana alur checkout dan pemesanan dari website ke saya sebagai pemilik bisnis?",
-    a: "Setiap transaksi atau request pemesanan dari website langsung diteruskan secara otomatis ke WhatsApp bisnis Anda dalam format pesan yang rapi dan terstruktur — termasuk nama produk, jumlah, total harga, dan lokasi pengiriman. Tidak perlu aplikasi tambahan. Tidak perlu bayar komisi ke marketplace.",
+    q: "Apakah Yapping Techflow membuka peluang kemitraan ventura atau Tech Co-Founder?",
+    a: "Ya. Kami sangat terbuka untuk model kemitraan strategis, venture building bersama founder terpilih, serta kerja sama berbasis milestone produk atau equity partnership untuk bisnis yang memiliki validasi pasar kuat dan membutuhkan keunggulan rekayasa perangkat lunak tingkat tinggi.",
   },
   {
-    q: "Jika bisnis saya berkembang dan butuh fitur lebih canggih, apakah bisa dikembangkan?",
-    a: "Inilah mengapa kami membangun setiap proyek dengan arsitektur modular Next.js yang scalable. Anda bisa mulai dari landing page sederhana, lalu bertahap kami tambahkan modul seperti: dashboard analitik, sistem loyalty poin, booking online, hingga ekosistem superapp terintegrasi — semuanya dalam satu platform yang sudah ada.",
+    q: "Standar arsitektur dan teknologi apa yang diterapkan di setiap produk?",
+    a: "Seluruh produk di bawah ekosistem kami dibangun menggunakan modern edge stack: Next.js Turbo, TypeScript ketat, arsitektur multi-tenant domain routing, performa loading sub-1 detik, dan infrastruktur cloud zero-downtime yang siap diekstensi secara modular menjadi superapp terintegrasi.",
   },
   {
-    q: "Berapa investasi untuk membangun website bersama Yapping Techflow?",
-    a: "Investasi bergantung pada scope proyek. Template Atelier Suite siap pakai tersedia dengan paket terjangkau untuk UMKM dan usaha niche. Proyek kustom seperti platform On-Demand atau B2B SaaS dihitung berdasarkan complexity sprint. Hubungi kami langsung via WhatsApp untuk konsultasi gratis dan estimasi anggaran yang transparan.",
+    q: "Bagaimana cara mendiskusikan kerja sama platform kustom atau inisiatif ventura?",
+    a: "Anda dapat langsung menghubungi dan berdiskusi dengan founder kami via WhatsApp di 0811-1001-0324. Kami membatasi jumlah proyek dan inisiatif strategis setiap kuartalnya untuk memastikan eksekusi kode, arsitektur, dan peluncuran produk berada pada standar kualitas tertinggi.",
   },
 ];
 
@@ -46,7 +46,7 @@ export function FaqSection() {
             Pertanyaan yang Sering Diajukan
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-xs sm:text-sm text-stone-600 font-outfit">
-            Jawaban transparan untuk pertanyaan terbesar sebelum Anda memutuskan berkolaborasi bersama kami.
+            Transparansi seputar visi studio, kemitraan ventura, dan ekosistem produk teknologi Yapping Techflow.
           </p>
         </div>
 

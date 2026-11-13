@@ -6,6 +6,12 @@ import type { NextRequest } from "next/server";
 // ============================================================================
 // Nanti jika ada klien baru beli domain sendiri (misal: rotienak.com atau client.com),
 // cukup daftarkan domain mereka di sini ke slug template masing-masing!
+export const KOMOSE_DOMAINS = new Set<string>([
+  "komose.id",
+  "www.komose.id",
+  "komose.localhost:3000",
+]);
+
 export const CLIENT_DOMAINS: Record<string, string> = {
   // Contoh Domain Asli Klien:
   // "rotienak.com": "patisserie",
@@ -13,13 +19,20 @@ export const CLIENT_DOMAINS: Record<string, string> = {
   // "bloomboutique.id": "florist",
   // "sedapcatering.com": "catering",
 
+  // Subdomain klien di bawah Komose (komose.id):
+  "patisserie.komose.id": "patisserie",
+  "rotimomoh.komose.id": "patisserie",
+  "florist.komose.id": "florist",
+  "catering.komose.id": "catering",
+
   // Local testing & preview subdomains (bisa langsung dicoba di browser):
   "patisserie.localhost:3000": "patisserie",
   "bakery.localhost:3000": "patisserie",
+  "rotimomoh.localhost:3000": "patisserie",
   "florist.localhost:3000": "florist",
   "catering.localhost:3000": "catering",
 
-  // Production subdomains preview:
+  // Production subdomains preview (legacy):
   "patisserie.yappingtechflow.com": "patisserie",
   "florist.yappingtechflow.com": "florist",
   "catering.yappingtechflow.com": "catering",
@@ -27,7 +40,7 @@ export const CLIENT_DOMAINS: Record<string, string> = {
 
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
-  const hostname = req.headers.get("host") || "";
+  const hostname = (req.headers.get("host") || "").toLowerCase();
 
   // Abaikan request untuk file statis Next.js, gambar, favicon, atau api
   if (
@@ -39,8 +52,14 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Jika diakses lewat domain Komose (komose.id / www.komose.id / komose.localhost:3000),
+  // tampilkan landing page Komose di '/' dan biarkan /templates serta /cms tetap bisa diakses.
+  if (KOMOSE_DOMAINS.has(hostname) && url.pathname === "/") {
+    return NextResponse.rewrite(new URL("/komose", req.url));
+  }
+
   // Cek apakah hostname yang diakses terdaftar sebagai custom domain klien
-  const matchedSlug = CLIENT_DOMAINS[hostname.toLowerCase()];
+  const matchedSlug = CLIENT_DOMAINS[hostname];
 
   if (matchedSlug) {
     // Jika klien mengakses /cms atau /admin di domain mereka sendiri,

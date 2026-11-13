@@ -1,43 +1,77 @@
-export function YappingLogo({ className = "h-8" }: { className?: string }) {
-  return (
-    <div className={`flex items-center gap-2.5 select-none ${className}`}>
-      {/* Icon: Sleek rounded black container with glowing cyan/green tech ring */}
-      <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black shadow-sm ring-1 ring-black/5">
-        <svg
-          viewBox="0 0 32 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-        >
-          {/* Outer glowing technical ring with aperture break */}
-          <circle
-            cx="16"
-            cy="16"
-            r="10"
-            stroke="url(#yappingRingGrad)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeDasharray="46 14"
-            className="transform -rotate-45 origin-center"
-          />
-          {/* Inner solid tech dot */}
-          <circle cx="16" cy="16" r="3.5" fill="#38bdf8" />
-          
-          <defs>
-            <linearGradient id="yappingRingGrad" x1="6" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#38bdf8" />
-              <stop offset="1" stopColor="#10b981" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+import Image from "next/image";
 
-      {/* Styled Modern Typography */}
-      <div className="flex items-baseline tracking-tight font-jakarta">
-        <span className="text-[15px] font-black text-stone-950">yapping</span>
-        <span className="text-[15px] font-normal text-stone-500">techflow</span>
-        <span className="text-[15px] font-extrabold text-emerald-500">.</span>
+interface YappingLogoProps {
+  className?: string;
+  variant?: "dark" | "light";
+  markOnly?: boolean;
+  wordmarkOnly?: boolean;
+  height?: number;
+}
+
+export function YappingLogo({
+  className = "",
+  variant = "light",
+  markOnly = false,
+  wordmarkOnly = false,
+  height = 30,
+}: YappingLogoProps) {
+  const isDark = variant === "dark";
+
+  // Mark only (YT ribbon emblem)
+  if (markOnly) {
+    const markWidth = Math.round(height * 1.344);
+    return (
+      <div className={`inline-flex items-center select-none ${className}`}>
+        <Image
+          src="/images/logo/yapping-techflow/yapping-techflow-mark.png"
+          alt="Yapping Techflow Mark"
+          width={markWidth}
+          height={height}
+          priority
+          className={`h-auto w-auto object-contain transition-all ${
+            isDark ? "brightness-110 drop-shadow-[0_2px_12px_rgba(56,189,248,0.25)]" : ""
+          }`}
+          style={{ height: `${height}px`, width: "auto" }}
+        />
       </div>
+    );
+  }
+
+  // Wordmark only ("Yapping Techflow")
+  if (wordmarkOnly) {
+    const wordmarkWidth = Math.round(height * 7.733);
+    return (
+      <div className={`inline-flex items-center select-none ${className}`}>
+        <Image
+          src="/images/logo/yapping-techflow/yapping-techflow-wordmark.png"
+          alt="Yapping Techflow Wordmark"
+          width={wordmarkWidth}
+          height={height}
+          priority
+          className={`h-auto w-auto object-contain transition-all ${
+            isDark ? "brightness-125 invert-[0.85] hue-rotate-180" : ""
+          }`}
+          style={{ height: `${height}px`, width: "auto" }}
+        />
+      </div>
+    );
+  }
+
+  // Full Logo (Mark + Wordmark)
+  const fullWidth = Math.round(height * 6.89);
+  return (
+    <div className={`inline-flex items-center select-none ${className}`}>
+      <Image
+        src="/images/logo/yapping-techflow/yapping-techflow-full.png"
+        alt="Yapping Techflow"
+        width={fullWidth}
+        height={height}
+        priority
+        className={`h-auto w-auto object-contain transition-all ${
+          isDark ? "brightness-110 drop-shadow-[0_2px_14px_rgba(56,189,248,0.2)]" : ""
+        }`}
+        style={{ height: `${height}px`, width: "auto" }}
+      />
     </div>
   );
 }

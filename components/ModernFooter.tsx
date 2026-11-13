@@ -16,41 +16,9 @@ export function ModernFooter({
           <Link
             href="/"
             className="group flex flex-col items-center gap-3 transition-transform hover:scale-105"
+            aria-label="Yapping Techflow Home"
           >
-            {/* Minimalist Solid Dark Icon Mark */}
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-black shadow-md ring-1 ring-black/5">
-              <svg
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
-              >
-                <circle
-                  cx="16"
-                  cy="16"
-                  r="10"
-                  stroke="url(#footerRingGrad)"
-                  strokeWidth="3.2"
-                  strokeLinecap="round"
-                  strokeDasharray="46 14"
-                  className="transform -rotate-45 origin-center"
-                />
-                <circle cx="16" cy="16" r="3.5" fill="#38bdf8" />
-                <defs>
-                  <linearGradient
-                    id="footerRingGrad"
-                    x1="6"
-                    y1="6"
-                    x2="26"
-                    y2="26"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stopColor="#38bdf8" />
-                    <stop offset="1" stopColor="#10b981" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
+            <YappingLogo height={34} />
           </Link>
         </div>
 
@@ -62,11 +30,11 @@ export function ModernFooter({
           <a href="#hero" className="hover:text-black transition-colors">
             Beranda
           </a>
+          <a href="#about" className="hover:text-black transition-colors">
+            Tentang Kami
+          </a>
           <a href="#products" className="hover:text-black transition-colors">
             Produk &amp; Layanan
-          </a>
-          <a href="#about" className="hover:text-black transition-colors">
-            Filosofi
           </a>
           <a href="#comparison" className="hover:text-black transition-colors">
             Keunggulan
@@ -74,12 +42,17 @@ export function ModernFooter({
           <a href="#faq" className="hover:text-black transition-colors">
             FAQ
           </a>
-          <Link href="/templates" className="hover:text-black transition-colors">
-            Katalog Template
+          <Link href="/komose" className="hover:text-black transition-colors">
+            Platform Komose
           </Link>
-          <Link href="/cms" className="hover:text-black transition-colors">
-            Live CMS Demo
-          </Link>
+          <a
+            href="https://plivin-digigift.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-black transition-colors"
+          >
+            Plivin.co
+          </a>
           <a
             href="https://wa.me/6281110010324"
             target="_blank"

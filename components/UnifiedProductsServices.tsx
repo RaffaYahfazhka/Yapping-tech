@@ -16,6 +16,7 @@ export interface ShowcaseProject {
   summary: string;
   link: string;
   isExternal: boolean;
+  ctaLabel?: string;
   features: string[];
   screenshotUrl: string;
   logoUrl?: string;
@@ -27,19 +28,19 @@ export const PROJECTS: ShowcaseProject[] = [
   {
     id: "plivin",
     name: "Plivin.co",
-    category: "Platform Digital Gifting & Hampers",
-    badge: "Produk Mandiri (In-House)",
+    category: "Digital Gifting & Upcoming Wedding Platform",
+    badge: "Venture Mandiri (In-House)",
     isClient: false,
-    highlightHook: "Kirim Kado & Hampers Mewah Lewat Satu Link Sinematik",
+    highlightHook: "Kado Digital, Hampers & Ekosistem Undangan Pernikahan",
     summary:
-      "Platform gifting interaktif yang mendisrupsi pengiriman kado konvensional dengan e-voucher instan, custom greeting card generator, dan checkout langsung via WhatsApp.",
+      "Startup internal di bawah Yapping Techflow. Memudahkan kirim kado & hampers mewah lewat satu link interaktif, dan segera hadir dengan fitur undangan pernikahan digital.",
     link: "https://plivin-digigift.vercel.app/",
     isExternal: true,
     features: [
       "Custom Digital Card Builder",
       "Mesin E-Voucher Instan",
+      "Segera Hadir: Undangan Nikah Digital",
       "Direct WhatsApp Sales Routing",
-      "Interactive Festive Experience",
     ],
     screenshotUrl: "/images/screenshot/home-plivin.png",
     logoUrl: "/images/logo/plivin.png",
@@ -50,11 +51,11 @@ export const PROJECTS: ShowcaseProject[] = [
     id: "clickcare",
     name: "ClickCare.id",
     category: "Infrastruktur Layanan Kesehatan Medis",
-    badge: "Platform Klien Resmi",
+    badge: "Klien Resmi (via Komose)",
     isClient: true,
     highlightHook: "Infrastruktur Layanan Medis & Homecare On-Demand",
     summary:
-      "Platform kesehatan modern klien kami. Menghubungkan ribuan pasien dengan dokter berizin, dispatch perawat ke rumah, dan sistem booking telekonsultasi 24 jam.",
+      "Klien aktif kami yang dikelola lewat ekosistem Komose. Menghubungkan ribuan pasien dengan dokter berizin, dispatch perawat ke rumah, dan booking telekonsultasi 24 jam.",
     link: "https://clickcare.id/",
     isExternal: true,
     features: [
@@ -69,24 +70,27 @@ export const PROJECTS: ShowcaseProject[] = [
     badgeColor: "bg-sky-50 text-sky-800 border-sky-200",
   },
   {
-    id: "atelier",
-    name: "Atelier Suite",
-    category: "Mesin Landing Page Multi-Niche",
-    badge: "Mesin Web Mandiri",
+    id: "komose",
+    name: "Komose",
+    category: "Platform Komersial Website Klien & CMS",
+    badge: "Lini Komersial Klien",
     isClient: false,
-    highlightHook: "Revenue-Engine Landing Page Siap Pakai untuk Bisnis Niche",
+    highlightHook: "Website Komersial Klien + CMS Mandiri Berkecepatan Sub-Detik",
     summary:
-      "Rangkaian landing page konversi tinggi untuk Bakery, Florist, dan Gourmet Catering. Customizer 2D interaktif, keranjang belanja, dan alur checkout WhatsApp instan.",
-    link: "/templates",
+      "Lini komersial di bawah Yapping Techflow yang melayani perancangan website berkinerja tinggi dan dashboard kelola toko mandiri ([Nama Brand] Management System) untuk klien bisnis, ritel, dan UMKM dengan 0% komisi transaksi.",
+    link: "/komose",
     isExternal: false,
+    ctaLabel: "Kunjungi Landing Page Komose",
     features: [
-      "3 Template Siap Pakai",
-      "Kustomisasi Produk 2D Interaktif",
-      "Performa Cepat Next.js Turbo",
-      "Checkout Langsung WhatsApp",
+      "Dipercaya Klien Terikat ClickCare.id",
+      "Dashboard CMS per Brand Klien",
+      "Performa Loading Sub-1 Detik",
+      "Order Checkout Masuk ke WhatsApp",
     ],
     screenshotUrl: "/images/screenshot/home-mint-patisserie.png",
-    badgeColor: "bg-amber-50 text-amber-900 border-amber-200",
+    logoUrl: "/images/komose/komose-full-logo.png",
+    logoHeight: 28,
+    badgeColor: "bg-orange-50 text-orange-900 border-orange-200",
   },
 ];
 
@@ -146,9 +150,8 @@ export function UnifiedProductsServices() {
               {/* Gradient mask bottom: mulus nyatu ke warna cream section Philosophy (#F9F7F2) */}
               <div className="absolute bottom-0 inset-x-0 h-52 sm:h-64 bg-gradient-to-t from-[#F9F7F2] via-[#F9F7F2]/80 to-transparent pointer-events-none z-10" />
 
-              {/* Vignette samping & ambient dark overlay tipis agar kontras tetap terjaga */}
-              <div className="absolute inset-0 bg-stone-950/20 pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#F9F7F2]/40 via-transparent to-[#F9F7F2]/30 pointer-events-none" />
+              {/* Vignette samping halus */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#F9F7F2]/20 via-transparent to-[#F9F7F2]/20 pointer-events-none" />
             </div>
           ))}
         </div>
@@ -190,7 +193,7 @@ export function UnifiedProductsServices() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 4 }}
               transition={{ duration: 0.3 }}
-              className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.22em] text-stone-700 font-grotesk"
+              className="inline-block rounded-full bg-white/80 px-3 py-1 border border-stone-200/80 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-stone-700 font-grotesk backdrop-blur-md shadow-2xs"
             >
               {project.badge}
             </motion.p>
@@ -203,8 +206,8 @@ export function UnifiedProductsServices() {
         {/* BOTTOM ROW */}
         <div className="pointer-events-auto px-5 sm:px-14 lg:px-20 pb-8 sm:pb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-5 sm:gap-6">
 
-          {/* LEFT: Logo + Big Title + Desc + Link */}
-          <div className="max-w-lg">
+          {/* LEFT: Logo + Big Title + Desc + Link dalam Card Kaca yang Nyaman Dibaca */}
+          <div className="max-w-md rounded-2xl border border-stone-200/80 bg-white/90 p-5 sm:p-6 shadow-xl backdrop-blur-xl">
             <AnimatePresence mode="wait">
               <motion.div
                 key={selectedIndex + "-brand"}
@@ -215,18 +218,18 @@ export function UnifiedProductsServices() {
                 className="mb-2 sm:mb-3"
               >
                 {project.logoUrl ? (
-                  <div className="h-8 sm:h-12 flex items-center">
+                  <div className="h-8 sm:h-10 flex items-center">
                     <Image
                       src={project.logoUrl}
                       alt={project.name}
-                      width={180}
-                      height={project.logoHeight || 36}
-                      className="h-8 sm:h-11 w-auto object-contain"
+                      width={160}
+                      height={project.logoHeight || 32}
+                      className="h-7 sm:h-9 w-auto object-contain"
                       unoptimized
                     />
                   </div>
                 ) : (
-                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold font-display italic text-stone-950 leading-[1.0] tracking-tight">
+                  <h2 className="text-2xl sm:text-4xl font-bold font-display italic text-stone-950 leading-[1.0] tracking-tight">
                     {project.name}
                   </h2>
                 )}
@@ -241,7 +244,7 @@ export function UnifiedProductsServices() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
-                className="mt-2 sm:mt-3 text-xs sm:text-sm md:text-[15px] text-stone-800 font-outfit leading-relaxed max-w-sm font-medium line-clamp-3 sm:line-clamp-none"
+                className="mt-2 text-xs sm:text-sm text-stone-700 font-outfit leading-relaxed line-clamp-3 sm:line-clamp-none"
               >
                 {project.summary}
               </motion.p>
@@ -255,27 +258,27 @@ export function UnifiedProductsServices() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.35, delay: 0.15 }}
-                className="mt-3.5 sm:mt-5"
+                className="mt-4"
               >
                 {project.isExternal ? (
                   <a
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-stone-950 border-b-2 border-stone-950/30 hover:border-stone-950 pb-0.5 transition-all duration-200"
+                    className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-stone-950 border-b border-stone-950/30 hover:border-stone-950 pb-0.5 transition-all duration-200"
                   >
                     <span>Kunjungi Live Platform</span>
-                    <span className="text-emerald-600 text-base transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                    <span className="text-emerald-600 text-sm transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                       ↗
                     </span>
                   </a>
                 ) : (
                   <Link
                     href={project.link}
-                    className="group inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-stone-950 border-b-2 border-stone-950/30 hover:border-stone-950 pb-0.5 transition-all duration-200"
+                    className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-stone-950 border-b border-stone-950/30 hover:border-stone-950 pb-0.5 transition-all duration-200"
                   >
-                    <span>Jelajahi Template Showcase</span>
-                    <span className="text-base transition-transform group-hover:translate-x-0.5">
+                    <span>{project.ctaLabel || "Kunjungi Platform"}</span>
+                    <span className="text-sm transition-transform group-hover:translate-x-0.5">
                       →
                     </span>
                   </Link>
@@ -294,7 +297,7 @@ export function UnifiedProductsServices() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="font-mono text-xs sm:text-sm font-bold text-stone-700 tracking-widest tabular-nums"
+                className="font-mono text-xs sm:text-sm font-bold text-stone-700 tracking-widest tabular-nums rounded-full bg-white/70 px-3 py-1 border border-stone-200/80 backdrop-blur-md"
               >
                 0{selectedIndex + 1}&nbsp;/&nbsp;0{PROJECTS.length}
               </motion.p>

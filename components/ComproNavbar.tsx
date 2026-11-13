@@ -16,12 +16,12 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { id: "home", label: "Beranda", href: "/#hero" },
+  { id: "about", label: "Tentang Kami", href: "/#about" },
   { id: "products", label: "Produk", href: "/#products" },
-  { id: "about", label: "Filosofi", href: "/#about" },
-  { id: "founder", label: "Founder", href: "/#founder" },
   { id: "comparison", label: "Keunggulan", href: "/#comparison" },
+  { id: "founder", label: "Founder", href: "/#founder" },
   { id: "faq", label: "FAQ", href: "/#faq" },
-  { id: "templates", label: "Templates & CMS ↗", href: "/templates", isExternal: true },
+  { id: "komose", label: "Komose ↗", href: "/komose", isExternal: true },
 ];
 
 export function ComproNavbar() {
@@ -31,8 +31,10 @@ export function ComproNavbar() {
 
   // Compute the current active navigation item ID based on route or scroll position
   const currentActive =
-    pathname?.startsWith("/templates") || pathname?.startsWith("/cms")
-      ? "templates"
+    pathname?.startsWith("/komose") ||
+    pathname?.startsWith("/templates") ||
+    pathname?.startsWith("/cms")
+      ? "komose"
       : activeSection;
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export function ComproNavbar() {
     const handleScroll = () => {
       const scrollPos = window.scrollY + 200;
 
-      const sections = ["faq", "comparison", "founder", "about", "products", "hero"];
+      const sections = ["faq", "founder", "comparison", "products", "about", "hero"];
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
         if (el) {
@@ -94,8 +96,8 @@ export function ComproNavbar() {
       <div className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
         <header className="pointer-events-auto flex h-14 w-full max-w-5xl items-center justify-between rounded-full border border-stone-200/90 bg-white/85 px-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] backdrop-blur-xl transition-all sm:px-6">
           {/* Logo */}
-          <Link href="/" className="group flex items-center transition-opacity hover:opacity-85">
-            <YappingLogo />
+          <Link href="/" className="group flex items-center transition-opacity hover:opacity-85" aria-label="Yapping Techflow">
+            <YappingLogo height={28} />
           </Link>
 
           {/* Desktop Nav */}

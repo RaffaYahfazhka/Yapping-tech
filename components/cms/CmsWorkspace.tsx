@@ -298,7 +298,7 @@ export function CmsWorkspace() {
     cms.reviews ?? DEFAULT_REVIEWS_BY_NICHE[activeId];
 
   const pitchCtaUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Halo Yapping Techflow, saya baru mencoba Live Preview "${managementTitle}" (${cms.enabled ? "Paket Dengan CMS" : "Paket Tanpa CMS"}). Saya tertarik membuat website bisnis seperti ini!`,
+    `Halo Komose, saya baru mencoba Live Preview "${managementTitle}" (${cms.enabled ? "Paket Dengan CMS" : "Paket Tanpa CMS"}). Saya tertarik membuat website toko seperti ini!`,
   )}`;
 
   return (

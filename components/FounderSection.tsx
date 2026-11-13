@@ -16,14 +16,14 @@ const PEOPLE: Person[] = [
     name: "Muhammad Raffa Yahfazhka",
     role: "Founder & Lead Architect",
     image: "/images/founder/founder.jpg",
-    bio: "Fokus di arsitektur full-stack, superapp, dan rekayasa platform cepat yang berorientasi langsung ke closing dan penjualan.",
+    bio: "Fokus pada arsitektur full-stack, rekayasa platform edge berkecepatan tinggi, serta inkubasi produk venture dengan orientasi skalabilitas dan konversi riil.",
     initials: "RY",
   },
   {
     name: "Fakhri Rossi",
     role: "Co-Founder",
     image: undefined, // foto menyusul
-    bio: "Mengawal operasional, strategi bisnis, dan eksekusi platform agar solusi digital yang dibangun tepat sasaran untuk klien.",
+    bio: "Mengawal operasional strategis, tata kelola kemitraan bisnis, dan eksekusi platform agar solusi digital yang dibangun tepat sasaran dan bernilai komersial tinggi.",
     initials: "FR",
   },
 ];
@@ -51,13 +51,13 @@ export function FounderSection() {
         {/* Section Header: Natural, Direct & Concise */}
         <div className="max-w-2xl mb-12 sm:mb-14">
           <p className="text-xs font-mono font-bold tracking-wider uppercase text-emerald-800 mb-2">
-            // FOUNDERS & LEAD TEAM
+            // FOUNDERS &amp; LEAD ARCHITECTS
           </p>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-stone-950 font-grotesk leading-tight">
-            Di balik sistem dan kode yang kami bangun.
+            Di balik arsitektur dan sistem yang kami bangun.
           </h2>
           <p className="mt-3 text-sm sm:text-base text-stone-600 font-outfit leading-relaxed">
-            Kami pegang langsung teknis dan arsitektur produk tanpa lempar ke pihak ketiga, memastikan setiap platform siap dipakai jualan dan mudah dikelola.
+            Kami mengawal langsung arsitektur sistem dari hulu ke hilir tanpa lempar ke pihak ketiga, memastikan setiap venture in-house dan platform klien dibangun di atas fondasi kelas dunia yang siap berekspansi.
           </p>
         </div>
 

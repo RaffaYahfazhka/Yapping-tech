@@ -8,6 +8,7 @@ import {
   Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
+import { DynamicBrandFavicon } from "@/components/DynamicBrandFavicon";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -60,8 +61,12 @@ export const metadata: Metadata = {
     "Building bold digital brands with thoughtful design and robust technology. Yapping Techflow menaungi beragam inovasi digital, tools bisnis, dan landing page performa tinggi.",
   icons: {
     icon: [
+      { url: "/icon.png", type: "image/png" },
       { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icon.png" },
     ],
   },
   openGraph: {
@@ -87,7 +92,10 @@ export default function RootLayout({
       lang="id"
       className={`${playfair.variable} ${cormorant.variable} ${dmSerif.variable} ${jakarta.variable} ${outfit.variable} ${spaceGrotesk.variable} antialiased`}
     >
-      <body className="font-jakarta">{children}</body>
+      <body className="font-jakarta">
+        <DynamicBrandFavicon />
+        {children}
+      </body>
     </html>
   );
 }

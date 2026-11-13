@@ -13,9 +13,19 @@ interface PageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Management System CMS + Live Preview — Yapping Techflow",
+  title: "Dashboard CMS Toko Mandiri — Komose",
   description:
-    "Dashboard CMS sederhana [Nama Brand] Management System dengan Live Preview real-time untuk mengelola produk, harga, promo, tema, dan kontak WhatsApp.",
+    "Panel kelola toko mandiri ([Nama Brand] Management System) dari Komose. Edit produk, harga, promo, dan alur WhatsApp dengan Live Preview real-time.",
+  icons: {
+    icon: [
+      { url: "/favicon-komose.png", type: "image/png" },
+      { url: "/favicon-komose.svg", type: "image/svg+xml" },
+      { url: "/images/komose/komose-app-icon.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/images/komose/komose-app-icon.png" },
+    ],
+  },
 };
 
 export default async function CmsIndexPage({ searchParams }: PageProps) {
