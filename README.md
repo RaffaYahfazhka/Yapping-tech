@@ -55,7 +55,7 @@ Agar seluruh developer dan tim bisnis satu frekuensi, berikut peta struktur ekos
 - **Status:** Brand B2C mandiri yang memiliki domain dan identitasnya sendiri (`plivin.co`).
 
 ### 3. ⚡ Komose (`komose.id`) — *Platform Layanan Klien & Freelance*
-- **Peran:** Brand komersial untuk bisnis freelance dan jasa pembuatan website klien.
+- **Peran:** Brand komersial untuk bisnis freelance dan jasa pembuatan website toko online & sistem CMS mandiri.
 - **Portofolio Klien:**
   - **ClickCare** (Klien utama yang sudah terikat kontrak).
   - Klien-klien baru yang akan datang (contoh: Roti Momoh, dsb).
@@ -63,6 +63,44 @@ Agar seluruh developer dan tim bisnis satu frekuensi, berikut peta struktur ekos
   - Tempat hosting seluruh website klien: `clickcare.komose.id`, `rotimomoh.komose.id`, dll.
   - Sistem CMS klien: **[Nama Brand] Management System powered by Komose**.
   - Footer web klien: `Powered by Komose · An ecosystem by Yapping Techflow`.
+
+#### 🎯 Spesifikasi & Konsep Komose
+
+##### 📌 Tujuan:
+1. **0% Potongan Komisi Selamanya:** Menyelamatkan margin keuntungan merchant dari potongan 15%–30% di marketplace/ojol; seluruh uang langsung masuk utuh ke rekening pribadi pemilik bisnis.
+2. **Otomasi Alur WhatsApp Siap Bayar:** Memangkas alur chat manual yang bertele-tele dan mengeliminasi drama pembeli PHP/ghosting dengan format pesanan rapi (produk, varian, alamat, dan total biaya sudah terhitung).
+3. **Kredibilitas & Valuasi Brand Toko:** Memberikan storefront toko online berkelas dengan loading sub-1 detik yang tampil bonafide di bio Instagram, TikTok, dan Google Maps.
+4. **Kemandirian Operasional Merchant:** Memberdayakan pemilik bisnis agar dapat mengupdate produk, harga, dan promo secara mandiri dari smartphone tanpa bergantung pada jasa IT/programmer.
+
+##### 👥 Jenis-Jenis User:
+1. **Merchant / Pemilik Toko (Bisnis Ritel & F&B):**
+   - Toko Roti & Kue (Bakery rumahan, custom cake, pastry).
+   - Florist, Buket Bunga, & Hampers / Souvenir Wisuda & Pernikahan.
+   - Katering Nasi Box, Katering Harian Kantor, & Prasmanan.
+   - Merchant F&B dan ritel kreatif lokal lainnya.
+2. **Penyedia Jasa & Layanan Spesialis:**
+   - Klinik Kesehatan, Dokter & Layanan Homecare (contoh: ClickCare.id).
+   - Studio kecantikan, salon, perawat, atau jasa panggilan ke rumah.
+3. **Admin Toko / Customer Service:**
+   - Mengelola pesanan WhatsApp yang masuk rapi tanpa perlu menghitung ongkir manual atau mengecek ketersediaan varian satu per satu.
+4. **Calon Pembeli / Pelanggan Akhir:**
+   - Pengunjung toko online yang ingin pengalaman belanja cepat di HP, bebas ribet tanpa perlu download aplikasi atau mengisi form kuesioner yang panjang.
+
+##### 🛠️ Fitur-Fitur:
+1. **Katalog Visual Interaktif (Anti Tanya-Tanya):**
+   - Pemilihan varian langsung (ukuran kue, diameter, rasa, pilihan pita bunga, jenis lauk katering).
+   - Add-on custom (kartu ucapan ucapan spesial, lilin, extra topping).
+2. **Kalkulator Ongkir Otomatis per Kecamatan:**
+   - Ongkos kirim terhitung otomatis berdasarkan wilayah kecamatan pembeli untuk mencegah drama pembeli kaget ongkir di akhir obrolan.
+3. **1-Click WhatsApp Checkout (Format Siap Bayar):**
+   - Pembeli langsung dialihkan ke WhatsApp admin dengan teks pesan terformat rapi berisi rincian pesanan, alamat antar, dan total pembayaran yang tinggal diberi nomor rekening.
+4. **Dashboard Mandiri ([Nama Brand] Management System / CMS HP):**
+   - Dashboard pengelolaan toko mandiri berbahasa Indonesia yang responsif diakses dari HP.
+   - Tambah menu baru, ubah harga, matikan stok habis (*sold out*), dan pasang banner promo musiman dalam 30 detik tanpa koding.
+5. **Multi-Domain & Subdomain Generator:**
+   - Dukungan instan untuk subdomain gratis `namatoko.komose.id` maupun custom domain mandiri `namatoko.com`.
+6. **Integrasi Ekosistem Multi-Tenant & Zero Commission Engine:**
+   - 100% omzet langsung ke rekening penjual tanpa perantara payment gateway wajib atau potongan komisi platform.
 
 ---
 
