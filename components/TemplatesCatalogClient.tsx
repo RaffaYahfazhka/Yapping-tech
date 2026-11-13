@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { NICHES, WHATSAPP_NUMBER } from "@/config/niches";
 import {
   getManagementSystemTitle,
@@ -26,63 +27,44 @@ export function TemplatesCatalogClient() {
   return (
     <>
       {/* Interactive Client Package Selector: Dengan CMS vs Tanpa CMS */}
-      <section className="mx-auto max-w-5xl px-4 pb-10 sm:px-6">
-        <div className="rounded-3xl border border-stone-200/90 bg-white/95 p-5 sm:p-7 shadow-sm">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-            <div className="max-w-xl">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-800">
-                Pilihan Paket Fleksibel
-              </span>
-              <h2 className="mt-2.5 text-lg sm:text-xl font-extrabold text-stone-950">
-                Pilih Kebutuhan Anda: Pakai CMS atau Tanpa CMS?
+      <section className="mx-auto max-w-5xl px-4 pb-8 sm:px-6">
+        <div className="rounded-2xl border border-stone-200/90 bg-white/95 p-4 sm:p-5 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-sm sm:text-base font-bold text-stone-950">
+                Pilih Opsi Paket
               </h2>
-              <p className="mt-1 text-xs text-stone-600 leading-relaxed">
+              <p className="mt-0.5 text-xs text-stone-500">
                 {wantsCms
-                  ? "Dengan CMS: Anda mendapatkan dashboard pribadi bernama brand Anda ([Nama Brand] Management System) untuk update produk, harga, foto & promo sendiri kapan saja + layanan maintenance bulanan."
-                  : "Tanpa CMS (Static): Website ultra-ringan tanpa panel admin. Cocok jika Anda ingin terima beres dan sesekali cukup hubungi tim kami bila ada perubahan konten."}
+                  ? "Termasuk panel CMS pribadi ([Nama Brand] Management System) & maintenance bulanan."
+                  : "Website statis siap pakai tanpa panel admin, cepat & terima beres."}
               </p>
             </div>
 
-            {/* Toggle Switcher */}
-            <div className="flex shrink-0 flex-col sm:flex-row gap-2 rounded-2xl border border-stone-200 bg-stone-100/90 p-1.5">
+            {/* Compact Toggle Switcher */}
+            <div className="inline-flex shrink-0 items-center rounded-xl border border-stone-200 bg-stone-100 p-1">
               <button
                 type="button"
                 onClick={() => handleToggleCms(false)}
-                className={`rounded-xl px-4 py-2.5 text-left transition-all ${
+                className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                   !wantsCms
-                    ? "bg-stone-950 text-white shadow-sm"
-                    : "text-stone-600 hover:text-stone-950"
+                    ? "bg-white text-stone-950 shadow-sm"
+                    : "text-stone-600 hover:text-stone-900"
                 }`}
               >
-                <div className="text-xs font-bold">⚡ Tanpa CMS (Static)</div>
-                <div
-                  className={`text-[10px] ${
-                    !wantsCms ? "text-stone-300" : "text-stone-500"
-                  }`}
-                >
-                  Setup sekali jalan · Terima beres
-                </div>
+                Tanpa CMS (Statis)
               </button>
 
               <button
                 type="button"
                 onClick={() => handleToggleCms(true)}
-                className={`rounded-xl px-4 py-2.5 text-left transition-all ${
+                className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
                   wantsCms
                     ? "bg-emerald-600 text-white shadow-sm"
-                    : "text-stone-600 hover:text-stone-950"
+                    : "text-stone-600 hover:text-stone-900"
                 }`}
               >
-                <div className="text-xs font-bold">
-                  🎛️ Dengan CMS + Maintenance
-                </div>
-                <div
-                  className={`text-[10px] ${
-                    wantsCms ? "text-emerald-100" : "text-stone-500"
-                  }`}
-                >
-                  [Brand] Management System
-                </div>
+                + Opsi CMS
               </button>
             </div>
           </div>
@@ -98,7 +80,7 @@ export function TemplatesCatalogClient() {
               ? `DENGAN CMS (${cmsTitle} + Maintenance Bulanan)`
               : "TANPA CMS (Website Static High-Conversion)";
             const nichePitch = encodeURIComponent(
-              `Halo Yapping Techflow, saya tertarik pesan template ${niche.brand} (${niche.dock.label}) dengan paket ${planLabel}. Boleh info detail harga dan fiturnya?`,
+              `Halo Komose, saya tertarik pesan website toko ${niche.brand} (${niche.dock.label}) dengan paket ${planLabel}. Boleh info detail harga dan langkah pembuatannya?`,
             );
 
             return (
@@ -108,7 +90,20 @@ export function TemplatesCatalogClient() {
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-3xl">{niche.dock.emoji}</span>
+                    {niche.dock.emojiImage ? (
+                      <div className="relative h-9 w-9">
+                        <Image
+                          src={niche.dock.emojiImage}
+                          alt={niche.dock.label}
+                          width={36}
+                          height={36}
+                          className="h-9 w-9 object-contain"
+                          unoptimized
+                        />
+                      </div>
+                    ) : (
+                      <span className="text-3xl">{niche.dock.emoji}</span>
+                    )}
                     <span className="rounded-full bg-stone-100 px-3 py-1 text-[11px] font-bold text-stone-700">
                       {niche.dock.shortLabel}
                     </span>
@@ -166,36 +161,33 @@ export function TemplatesCatalogClient() {
                   </div>
                 </div>
 
-                <div className="mt-7 flex flex-col gap-2 pt-4 border-t border-stone-100">
-                  <Link
-                    href={`/templates/${niche.id}`}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-stone-950 px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-stone-800 shadow-sm"
-                  >
-                    <span>Live Preview Website</span>
-                    <span>→</span>
-                  </Link>
+                <div className="mt-6 flex flex-col gap-2 pt-4 border-t border-stone-100">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      href={`/templates/${niche.id}`}
+                      className="flex items-center justify-center gap-1.5 rounded-xl bg-stone-950 px-3 py-2.5 text-xs font-bold text-white transition-all hover:bg-stone-800 shadow-sm"
+                    >
+                      <span>Lihat Web</span>
+                      <span>→</span>
+                    </Link>
 
-                  <Link
-                    href={`/cms/${niche.id}`}
-                    className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all ${
-                      wantsCms
-                        ? "bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm"
-                        : "border border-emerald-200 bg-emerald-50/60 text-emerald-800 hover:bg-emerald-100"
-                    }`}
-                  >
-                    <span>🎛️ Live Preview CMS</span>
-                  </Link>
+                    <Link
+                      href={`/cms/${niche.id}`}
+                      className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5 text-xs font-semibold text-stone-700 transition-all hover:bg-stone-100"
+                    >
+                      <span>Coba CMS</span>
+                      <span>↗</span>
+                    </Link>
+                  </div>
 
                   <a
                     href={`https://wa.me/${WHATSAPP_NUMBER}?text=${nichePitch}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2 text-xs font-semibold text-stone-800 transition-colors hover:bg-stone-50"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-xs font-bold text-emerald-800 transition-colors hover:bg-emerald-100"
                   >
-                    <span>
-                      Pesan ({wantsCms ? "Dengan CMS" : "Tanpa CMS"}) via WA
-                    </span>
-                    <span className="text-emerald-600">↗</span>
+                    <span>Pesan via WhatsApp</span>
+                    <span>↗</span>
                   </a>
                 </div>
               </div>

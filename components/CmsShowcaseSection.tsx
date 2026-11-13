@@ -113,7 +113,7 @@ export function CmsShowcaseSection() {
 
   const systemTitle = getManagementSystemTitle(customBrand || previewConfig.brand);
   const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Halo Yapping Techflow, saya tertarik dengan paket website ${
+    `Halo Komose, saya tertarik dengan paket website toko ${
       wantsCms
         ? `DENGAN CMS (${systemTitle} + Maintenance Bulanan)`
         : "TANPA CMS (Website Statis)"
@@ -129,23 +129,13 @@ export function CmsShowcaseSection() {
       <div className="pointer-events-none absolute left-1/3 top-10 h-[420px] w-[520px] rounded-full bg-emerald-200/25 blur-[140px]" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-800 font-grotesk">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Add-On Opsional · White-Label CMS
-          </span>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-stone-950 sm:text-5xl font-grotesk">
-            Bebas Pilih: Pakai CMS atau Tanpa CMS
+        {/* Header: Short & Punchy */}
+        <div className="text-center mb-10">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-stone-950 font-grotesk">
+            Simulasi Live Dashboard CMS
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-xs sm:text-sm text-stone-600 font-outfit leading-relaxed">
-            Klien dapat memilih website statis terima beres, atau sepaket dengan
-            dashboard{" "}
-            <strong className="text-stone-950">
-              [Nama Brand] Management System
-            </strong>{" "}
-            untuk kelola produk, harga, promo &amp; WhatsApp secara mandiri
-            didukung layanan maintenance bulanan.
+          <p className="mx-auto mt-2 max-w-lg text-xs sm:text-sm text-stone-600 font-outfit">
+            Coba ketik nama brand dan promo Anda di simulator bawah ini untuk melihat perubahannya langsung di frame website.
           </p>
         </div>
 

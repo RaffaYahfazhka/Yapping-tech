@@ -20,6 +20,7 @@ export interface ThemeTokens {
 
 export interface DockMeta {
   emoji: string;
+  emojiImage?: string;
   label: string;
   shortLabel: string;
 }

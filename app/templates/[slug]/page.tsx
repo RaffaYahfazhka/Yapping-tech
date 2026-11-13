@@ -29,16 +29,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!niche) {
     return {
-      title: "Template Not Found — Yapping Techflow",
+      title: "Template Not Found — Komose",
     };
   }
 
   return {
-    title: `${niche.brand} — Template Website ${niche.dock.label} | Yapping Techflow`,
-    description: `Preview template website modern & interaktif untuk bisnis ${niche.dock.label}. Desain elegan, responsif, dan siap tingkatkan penjualan bersama Yapping Techflow.`,
+    title: `${niche.brand} — Template Toko ${niche.dock.label} | Komose`,
+    description: `Preview template website modern & interaktif untuk bisnis ${niche.dock.label}. Desain elegan, responsif, dan siap jualan langsung via WhatsApp bersama Komose.`,
     openGraph: {
-      title: `${niche.brand} — Template ${niche.dock.label} by Yapping Techflow`,
-      description: `Solusi landing page performa tinggi untuk ${niche.dock.label}. Preview interaktif & pesan sekarang.`,
+      title: `${niche.brand} — Template ${niche.dock.label} by Komose`,
+      description: `Website jualan performa tinggi untuk ${niche.dock.label}. Preview interaktif & pesan sekarang.`,
       type: "website",
     },
   };

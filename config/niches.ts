@@ -415,7 +415,12 @@ export const NICHES: NicheConfig[] = [
     logo: "/images/patisserie/logo.png",
     tagline: "Custom Cake Impian & Urgent Order Ready · Jakarta · Tangerang · Bekasi",
     mode: "retail",
-    dock: { emoji: "🎂", label: "Custom Cake (Mint)", shortLabel: "Cake" },
+    dock: {
+      emoji: "🎂",
+      emojiImage: "/images/emojis/cake.png",
+      label: "Custom Cake (Mint)",
+      shortLabel: "Cake",
+    },
     theme: {
       background: "#FAF7F5",
       surface: "#FFFFFF",
@@ -571,7 +576,12 @@ export const NICHES: NicheConfig[] = [
     logo: "/images/florist/logo.png",
     tagline: "Buket Wisuda, Uang & Bunga Segar · Bisa Request Budget",
     mode: "bouquet",
-    dock: { emoji: "💐", label: "Rumah Bouquet", shortLabel: "Bouquet" },
+    dock: {
+      emoji: "💐",
+      emojiImage: "/images/emojis/bouquet.png",
+      label: "Rumah Bouquet",
+      shortLabel: "Bouquet",
+    },
     theme: {
       background: "#FDFBF9",
       surface: "#FFFFFF",
@@ -727,7 +737,12 @@ export const NICHES: NicheConfig[] = [
     logo: "/images/catering/logo.png",
     tagline: "Healthy Meals, Personalized · Kebayoran Baru, Jaksel",
     mode: "catering",
-    dock: { emoji: "🥗", label: "Healthy Catering (Glow)", shortLabel: "Healthy" },
+    dock: {
+      emoji: "🥗",
+      emojiImage: "/images/emojis/catering.png",
+      label: "Healthy Catering (Glow)",
+      shortLabel: "Healthy",
+    },
     theme: {
       background: "#FAF9FC",
       surface: "#FFFFFF",
